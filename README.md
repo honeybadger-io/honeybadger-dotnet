@@ -9,4 +9,5 @@ TODO:
 - [ ] Go through Client Library Spec and pick most important features
 - [ ] Plan milestones and iterations to reach MVP
 - [ ] Start a project in C# and adopt an architecture (follow similar libraries like [Sentry](https://github.com/getsentry/sentry-dotnet) and [Bugsnag](https://github.com/bugsnag/bugsnag-dotnet). Create a [class library](https://docs.microsoft.com/en-us/nuget/quickstart/create-and-publish-a-package-using-the-dotnet-cli) project
+- [ ] Write tests
 - [ ] Add time estimations to the plan

@@ -8,5 +8,5 @@ TODO:
 - [ ] Research .Net latest updates. Figure out trends. Decide which .Net technology to support first (.Net Core?) - [2021 Dev Ecosystem from Jetbrains](https://www.jetbrains.com/lp/devecosystem-2021/csharp/)
 - [ ] Go through Client Library Spec and pick most important features
 - [ ] Plan milestones and iterations to reach MVP
-- [ ] Start a project in C# and adopt an architecture (follow similar libraries like [Sentry](https://github.com/getsentry/sentry-dotnet) and [Bugsnag](https://github.com/bugsnag/bugsnag-dotnet)
+- [ ] Start a project in C# and adopt an architecture (follow similar libraries like [Sentry](https://github.com/getsentry/sentry-dotnet) and [Bugsnag](https://github.com/bugsnag/bugsnag-dotnet). Create a [class library](https://docs.microsoft.com/en-us/nuget/quickstart/create-and-publish-a-package-using-the-dotnet-cli) project
 - [ ] Add time estimations to the plan

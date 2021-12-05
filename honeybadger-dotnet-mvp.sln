@@ -3,7 +3,32 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 25.0.1700.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "honeybadger-dotnet-mvp", "honeybadger-dotnet-mvp.csproj", "{C46D0FF2-91F4-4825-9021-D8F0B761B6BB}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{9D7E2F87-D6F4-4BBB-8980-87D0A8344C74}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B3345FD5-AD45-4A59-9F7A-9DBF54656FF2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{798689AD-BF0E-429E-BADA-5EFBFE5BFD8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger", "src\Honeybadger\Honeybadger.csproj", "{9381B831-BDAE-41EA-AA50-70CB5AFF1185}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger.Extensions.Logging", "src\Honeybadger.Extensions.Logging\Honeybadger.Extensions.Logging.csproj", "{10CDC679-0FC8-4F81-9960-330150F871BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger.DotNetCore", "src\Honeybadger.DotNetCore\Honeybadger.DotNetCore.csproj", "{0AAF81F0-3D80-433B-ADFA-914C30EDD533}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger.Tests", "tests\Honeybadger.Tests\Honeybadger.Tests.csproj", "{6D843347-ADF1-4932-82A7-7D090C8A48FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger.Extensions.Logging.Tests", "tests\Honeybadger.Extensions.Logging.Tests\Honeybadger.Extensions.Logging.Tests.csproj", "{DECD1C4D-EF72-4190-96FB-FF5EBF53CA0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger.DotNetCore.Tests", "tests\Honeybadger.DotNetCore.Tests\Honeybadger.DotNetCore.Tests.csproj", "{C76193FD-7EEC-4B5B-B3BA-3854C847A8C2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{89C7DC71-C55D-40D7-94F2-2F2F7C40FAC1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger.Console", "examples\Honeybadger.Console\Honeybadger.Console.csproj", "{AD4D0F8B-CE5E-4782-9CF4-BDDA060DBA02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger.DotNetCoreWebApp", "examples\Honeybadger.DotNetCoreWebApp\Honeybadger.DotNetCoreWebApp.csproj", "{8E0CD14F-BD8A-42B5-9A23-5E4C9D7ECBF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +36,53 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C46D0FF2-91F4-4825-9021-D8F0B761B6BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C46D0FF2-91F4-4825-9021-D8F0B761B6BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C46D0FF2-91F4-4825-9021-D8F0B761B6BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C46D0FF2-91F4-4825-9021-D8F0B761B6BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9381B831-BDAE-41EA-AA50-70CB5AFF1185}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9381B831-BDAE-41EA-AA50-70CB5AFF1185}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9381B831-BDAE-41EA-AA50-70CB5AFF1185}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9381B831-BDAE-41EA-AA50-70CB5AFF1185}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10CDC679-0FC8-4F81-9960-330150F871BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10CDC679-0FC8-4F81-9960-330150F871BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10CDC679-0FC8-4F81-9960-330150F871BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10CDC679-0FC8-4F81-9960-330150F871BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AAF81F0-3D80-433B-ADFA-914C30EDD533}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AAF81F0-3D80-433B-ADFA-914C30EDD533}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AAF81F0-3D80-433B-ADFA-914C30EDD533}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AAF81F0-3D80-433B-ADFA-914C30EDD533}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D843347-ADF1-4932-82A7-7D090C8A48FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D843347-ADF1-4932-82A7-7D090C8A48FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D843347-ADF1-4932-82A7-7D090C8A48FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D843347-ADF1-4932-82A7-7D090C8A48FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DECD1C4D-EF72-4190-96FB-FF5EBF53CA0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DECD1C4D-EF72-4190-96FB-FF5EBF53CA0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DECD1C4D-EF72-4190-96FB-FF5EBF53CA0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DECD1C4D-EF72-4190-96FB-FF5EBF53CA0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C76193FD-7EEC-4B5B-B3BA-3854C847A8C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C76193FD-7EEC-4B5B-B3BA-3854C847A8C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C76193FD-7EEC-4B5B-B3BA-3854C847A8C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C76193FD-7EEC-4B5B-B3BA-3854C847A8C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD4D0F8B-CE5E-4782-9CF4-BDDA060DBA02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD4D0F8B-CE5E-4782-9CF4-BDDA060DBA02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD4D0F8B-CE5E-4782-9CF4-BDDA060DBA02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD4D0F8B-CE5E-4782-9CF4-BDDA060DBA02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E0CD14F-BD8A-42B5-9A23-5E4C9D7ECBF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E0CD14F-BD8A-42B5-9A23-5E4C9D7ECBF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E0CD14F-BD8A-42B5-9A23-5E4C9D7ECBF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E0CD14F-BD8A-42B5-9A23-5E4C9D7ECBF7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {43CB2426-ED51-41EB-868D-B4C1F6B6AA65}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9381B831-BDAE-41EA-AA50-70CB5AFF1185} = {B3345FD5-AD45-4A59-9F7A-9DBF54656FF2}
+		{10CDC679-0FC8-4F81-9960-330150F871BF} = {B3345FD5-AD45-4A59-9F7A-9DBF54656FF2}
+		{0AAF81F0-3D80-433B-ADFA-914C30EDD533} = {B3345FD5-AD45-4A59-9F7A-9DBF54656FF2}
+		{6D843347-ADF1-4932-82A7-7D090C8A48FF} = {798689AD-BF0E-429E-BADA-5EFBFE5BFD8A}
+		{DECD1C4D-EF72-4190-96FB-FF5EBF53CA0B} = {798689AD-BF0E-429E-BADA-5EFBFE5BFD8A}
+		{C76193FD-7EEC-4B5B-B3BA-3854C847A8C2} = {798689AD-BF0E-429E-BADA-5EFBFE5BFD8A}
+		{AD4D0F8B-CE5E-4782-9CF4-BDDA060DBA02} = {89C7DC71-C55D-40D7-94F2-2F2F7C40FAC1}
+		{8E0CD14F-BD8A-42B5-9A23-5E4C9D7ECBF7} = {89C7DC71-C55D-40D7-94F2-2F2F7C40FAC1}
 	EndGlobalSection
 EndGlobal

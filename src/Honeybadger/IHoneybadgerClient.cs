@@ -1,6 +1,8 @@
+using Honeybadger.Schema;
+
 namespace Honeybadger;
 
 public interface IHoneybadgerClient
 {
-    public void Notify(HoneybadgerNotice notice);
+    public void Notify(Notice notice);
 }

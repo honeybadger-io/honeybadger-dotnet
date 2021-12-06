@@ -15,7 +15,7 @@ public static class HoneybadgerSdk
             return _client;
         }
 
-        _client = new HoneybadgerClient();
+        _client = new HoneybadgerClient(options);
         return _client;
     }
 }

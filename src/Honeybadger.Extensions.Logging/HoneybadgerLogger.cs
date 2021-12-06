@@ -1,3 +1,4 @@
+using Honeybadger.Schema;
 using Microsoft.Extensions.Logging;
 
 namespace Honeybadger.Extensions.Logging;
@@ -20,9 +21,13 @@ public class HoneybadgerLogger : ILogger
             return;
         }
 
-        var notice = new HoneybadgerNotice(exception);
+        if (exception == null)
+        {
+            return;
+        }
+        
+        var notice = NoticeFactory.Make(exception);
         _client.Notify(notice);
-
     }
 
     public bool IsEnabled(LogLevel logLevel)

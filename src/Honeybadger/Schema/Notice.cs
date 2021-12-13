@@ -1,8 +1,6 @@
-namespace Honeybadger.Schema;
-
-using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
+
+namespace Honeybadger.Schema;
 
 public class Notice
 {

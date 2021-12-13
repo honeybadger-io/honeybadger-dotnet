@@ -17,6 +17,23 @@ public class HoneybadgerClient: IHoneybadgerClient
 
     public async void Notify(Notice notice)
     {
+        Send(notice);
+    }
+
+    public void Notify(string message)
+    {
+        var notice = NoticeFactory.Make(message);
+        Send(notice);
+    }
+
+    public void Notify(Exception error)
+    {
+        var notice = NoticeFactory.Make(error);
+        Send(notice);
+    }
+
+    private async void Send(Notice notice)
+    {
         await _httpClient.PostAsJsonAsync(_options.ApiEndpoint, notice);
     }
 }

@@ -7,7 +7,7 @@ public class HoneybadgerClientTest
     [Fact]
     public void InitializesClient()
     {
-        var client = HoneybadgerSdk.Init(new HoneybadgerOptions
+        var client = HoneybadgerSdk.Init(new HoneybadgerOptions("test")
         {
             IsDisabled = false
         });
@@ -15,13 +15,24 @@ public class HoneybadgerClientTest
     }
 
     [Fact]
-    public void ReturnsNullClientIfDisabled()
+    public void NullClient_IfDisabled()
     {
-        var client = HoneybadgerSdk.Init(new HoneybadgerOptions
+        var client = HoneybadgerSdk.Init(new HoneybadgerOptions("test")
         {
             IsDisabled = true
         });
         Assert.True(client is NullClient);
     }
-    
+
+    [Fact]
+    public void SendsNotice_ResponseOk()
+    {
+    }
+
+    [Fact]
+    public void SendsNotice_ResponseNotOk()
+    {
+        
+    }
+
 }

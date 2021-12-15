@@ -4,6 +4,8 @@ using Honeybadger;
 
 Console.WriteLine("Hello, World!");
 
-var client = HoneybadgerSdk.Init(new HoneybadgerOptions("test"));
+var client = HoneybadgerSdk.Init(new HoneybadgerOptions("80ee8156"));
 
 client.Notify("console app");
+
+Thread.Sleep(1000);

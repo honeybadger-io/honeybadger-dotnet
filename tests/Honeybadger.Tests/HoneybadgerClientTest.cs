@@ -9,7 +9,7 @@ public class HoneybadgerClientTest
     {
         var client = HoneybadgerSdk.Init(new HoneybadgerOptions("test")
         {
-            IsDisabled = false
+             ReportData = false
         });
         Assert.True(client is HoneybadgerClient);
     }
@@ -19,7 +19,7 @@ public class HoneybadgerClientTest
     {
         var client = HoneybadgerSdk.Init(new HoneybadgerOptions("test")
         {
-            IsDisabled = true
+            ReportData = false
         });
         Assert.True(client is NullClient);
     }

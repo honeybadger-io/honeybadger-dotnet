@@ -34,6 +34,6 @@ public class HoneybadgerClient: IHoneybadgerClient
 
     private async void Send(Notice notice)
     {
-        await _httpClient.PostAsJsonAsync(_options.ApiEndpoint, notice);
+        await _httpClient.PostAsJsonAsync(_options.Endpoint, notice);
     }
 }

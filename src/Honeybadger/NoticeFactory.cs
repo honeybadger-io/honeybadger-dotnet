@@ -8,21 +8,21 @@ public static class NoticeFactory
 {
     public static Notice Make(string message)
     {
-        var stackTrace = new StackTrace(true);
+        // skip frame from NoticeFactory
+        var stackTrace = new StackTrace(1,true);
         
         return Make(message, stackTrace);
     }
 
     public static Notice Make(Exception error)
     {
-        var stackTrace = new StackTrace(error);
+        var stackTrace = error.StackTrace == null ? new StackTrace(true) : new StackTrace(error, true);
         
-        return Make(error.Message, stackTrace);
+        return Make(error.Message, stackTrace, error.GetType().FullName);
     }
 
-    private static Notice Make(string message, StackTrace stackTrace)
+    private static Notice Make(string message, StackTrace stackTrace, string? className = null)
     {
-        var firstFrame = stackTrace.GetFrame(0);
         var notice = new Notice
         {
             Notifier = GetNotifier(),
@@ -30,7 +30,7 @@ public static class NoticeFactory
             Details = null, // todo
             Error = new Error
             {
-                Class = firstFrame?.GetType().FullName,
+                Class = className ?? stackTrace.GetFrame(0)?.GetMethod()?.DeclaringType?.FullName,
                 Message = message,
                 Backtrace = GetBacktrace(stackTrace),
                 Fingerprint = null, // todo

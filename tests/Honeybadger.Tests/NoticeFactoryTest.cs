@@ -15,6 +15,7 @@ public class NoticeFactoryTest
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);
         Assert.Equal("test", notice.Error?.Message);
+        Assert.Equal("Honeybadger.Tests.NoticeFactoryTest", notice.Error?.Class);
     }
     
     [Fact]
@@ -26,7 +27,7 @@ public class NoticeFactoryTest
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);
         Assert.Equal("exception", notice.Error?.Message);
-        Assert.Equal("NamedException", notice.Error?.Class);
+        Assert.Equal("Honeybadger.Tests.NamedException", notice.Error?.Class);
     }
     
     [Fact]

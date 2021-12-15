@@ -1,3 +1,4 @@
+using System;
 using Xunit;
 
 namespace Honeybadger.Tests;
@@ -27,12 +28,13 @@ public class HoneybadgerClientTest
     [Fact]
     public void SendsNotice_ResponseOk()
     {
+        throw new NotImplementedException();
     }
 
     [Fact]
     public void SendsNotice_ResponseNotOk()
     {
-        
+        throw new NotImplementedException();
     }
 
 }

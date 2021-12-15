@@ -4,7 +4,10 @@ using Honeybadger;
 
 Console.WriteLine("Hello, World!");
 
-var client = HoneybadgerSdk.Init(new HoneybadgerOptions("80ee8156"));
+var client = HoneybadgerSdk.Init(new HoneybadgerOptions("80ee8156")
+{
+    AppEnvironment = "dotnet-environment"
+});
 
 client.Notify("console app");
 

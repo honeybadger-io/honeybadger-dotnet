@@ -10,7 +10,8 @@ public class NoticeFactoryTest
     [Fact]
     public void CreatesNotice_FromString()
     {
-        var notice = NoticeFactory.Make("test");
+        var client = new NullClient();
+        var notice = NoticeFactory.Make(client, "test");
         
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);
@@ -21,8 +22,9 @@ public class NoticeFactoryTest
     [Fact]
     public void CreatesNotice_FromException()
     {
+        var client = new NullClient();
         var exception = new NamedException("exception");
-        var notice = NoticeFactory.Make(exception);
+        var notice = NoticeFactory.Make(client, exception);
         
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);

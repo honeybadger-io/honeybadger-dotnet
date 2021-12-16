@@ -21,7 +21,7 @@ public class HoneybadgerLogger : ILogger
             return;
         }
 
-        var notice = NoticeFactory.Make(exception);
+        var notice = NoticeFactory.Make(_client, exception);
         _client.Notify(notice);
     }
 

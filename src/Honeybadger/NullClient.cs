@@ -4,6 +4,8 @@ namespace Honeybadger;
 
 public class NullClient: IHoneybadgerClient
 {
+    public HoneybadgerOptions Options { get; }
+    
     public void Notify(Notice notice)
     {
     }

@@ -28,8 +28,8 @@ public class Breadcrumbs
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
 
-    [JsonPropertyName("trail")]
-    public Trail[]? Trail { get; set; }
+    [JsonPropertyName("trail")] 
+    public Trail[] Trail { get; set; } = Array.Empty<Trail>();
 }
 
 public class Trail
@@ -54,10 +54,7 @@ public class Error
 {
     [JsonPropertyName("backtrace")]
     public ErrorBacktrace[]? Backtrace { get; set; }
-
-    [JsonPropertyName("causes")]
-    public Cause[]? Causes { get; set; }
-
+    
     [JsonPropertyName("class")]
     public string? Class { get; set; }
 
@@ -66,10 +63,7 @@ public class Error
 
     [JsonPropertyName("message")]
     public string? Message { get; set; }
-
-    [JsonPropertyName("source")]
-    public ErrorSource? Source { get; set; }
-
+    
     [JsonPropertyName("tags")]
     public string[]? Tags { get; set; }
 }
@@ -77,13 +71,13 @@ public class Error
 public class ErrorBacktrace
 {
     [JsonPropertyName("args")]
-    public Arg[]? Args { get; set; }
+    public object[]? Args { get; set; }
 
     [JsonPropertyName("class")]
     public string? Class { get; set; }
 
     [JsonPropertyName("column")]
-    public Column? Column { get; set; }
+    public string? Column { get; set; }
 
     [JsonPropertyName("context")]
     public Context? Context { get; set; }
@@ -95,7 +89,7 @@ public class ErrorBacktrace
     public string? Method { get; set; }
 
     [JsonPropertyName("number")]
-    public Column Number { get; set; }
+    public string? Number { get; set; }
 
     [JsonPropertyName("source")]
     public BacktraceSource? Source { get; set; }
@@ -105,48 +99,6 @@ public class ErrorBacktrace
 }
 
 public class BacktraceSource
-{
-    [JsonPropertyName("1")]
-    public string? The1 { get; set; }
-}
-
-public class Cause
-{
-    [JsonPropertyName("backtrace")]
-    public CauseBacktrace[]? Backtrace { get; set; }
-
-    [JsonPropertyName("class")]
-    public string? Class { get; set; }
-
-    [JsonPropertyName("message")]
-    public string? Message { get; set; }
-}
-
-public class CauseBacktrace
-{
-    [JsonPropertyName("class")]
-    public string? Class { get; set; }
-
-    [JsonPropertyName("column")]
-    public Column? Column { get; set; }
-
-    [JsonPropertyName("context")]
-    public Context? Context { get; set; }
-
-    [JsonPropertyName("file")]
-    public string? File { get; set; }
-
-    [JsonPropertyName("method")]
-    public string? Method { get; set; }
-
-    [JsonPropertyName("number")]
-    public Column Number { get; set; }
-
-    [JsonPropertyName("type")]
-    public string? Type { get; set; }
-}
-
-public class ErrorSource
 {
     [JsonPropertyName("1")]
     public string? The1 { get; set; }
@@ -190,7 +142,8 @@ public class Request
 
 public class CgiData
 {
-    [JsonPropertyName("HTTP_COOKIE")] public string? HttpCookie { get; set; }
+    [JsonPropertyName("HTTP_COOKIE")] 
+    public string? HttpCookie { get; set; }
 
     [JsonPropertyName("HTTP_HOST")]
     public string? HttpHost { get; set; }
@@ -286,29 +239,4 @@ public struct Metadatum
     public static implicit operator Metadatum(double doubleValue) => new Metadatum { Double = doubleValue };
     public static implicit operator Metadatum(string? stringValue) => new Metadatum { String = stringValue };
     public bool IsNull => Bool == null && Double == null && String == null;
-}
-
-public struct Arg
-{
-    public object[] AnythingArray;
-    public Dictionary<string, object> AnythingMap;
-    public bool? Bool;
-    public double? Double;
-    public string? String;
-
-    public static implicit operator Arg(object[] anythingArray) => new Arg { AnythingArray = anythingArray };
-    public static implicit operator Arg(Dictionary<string, object> anythingMap) => new Arg { AnythingMap = anythingMap };
-    public static implicit operator Arg(bool boolValue) => new Arg { Bool = boolValue };
-    public static implicit operator Arg(double doubleValue) => new Arg { Double = doubleValue };
-    public static implicit operator Arg(string? stringValue) => new Arg { String = stringValue };
-    public bool IsNull => AnythingArray == null && Bool == null && Double == null && AnythingMap == null && String == null;
-}
-
-public struct Column
-{
-    public long? Integer;
-    public string? String;
-
-    public static implicit operator Column(long integerValue) => new Column { Integer = integerValue };
-    public static implicit operator Column(string? stringValue) => new Column { String = stringValue };
 }

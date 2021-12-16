@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 using Honeybadger.Schema;
 
@@ -6,43 +7,59 @@ namespace Honeybadger;
 
 public static class NoticeFactory
 {
-    public static Notice Make(string message)
+    public static Notice Make(IHoneybadgerClient client, string message)
     {
-        // skip frame from NoticeFactory
-        var stackTrace = new StackTrace(1,true);
+        // skip frame from NoticeFactory.Make + HoneybadgerClient.Notify
+        var stackTrace = new StackTrace(2,true);
         
-        return Make(message, stackTrace);
+        return Make(client, message, stackTrace);
     }
 
-    public static Notice Make(Exception error)
+    public static Notice Make(IHoneybadgerClient client, Exception error)
     {
         var stackTrace = error.StackTrace == null ? new StackTrace(true) : new StackTrace(error, true);
         
-        return Make(error.Message, stackTrace, error.GetType().FullName);
+        return Make(client, error.Message, stackTrace, error.GetType().FullName);
     }
 
-    private static Notice Make(string message, StackTrace stackTrace, string? className = null)
+    private static Notice Make(IHoneybadgerClient client, string message, StackTrace stackTrace, string? className = null)
     {
         var notice = new Notice
         {
             Notifier = GetNotifier(),
             Breadcrumbs = GetBreadcrumbs(),
             Details = null, // todo
+            Request = null, // todo
+            Server = GetServer(client),
             Error = new Error
             {
                 Class = className ?? stackTrace.GetFrame(0)?.GetMethod()?.DeclaringType?.FullName,
                 Message = message,
                 Backtrace = GetBacktrace(stackTrace),
                 Fingerprint = null, // todo
-                Source = null, // todo: error.Source ?
-                Causes = null, // todo
                 Tags = null, // todo
             },
-            Request = null, // todo
-            Server = null // todo
+            
         };
 
         return notice;
+    }
+
+    /**
+     * TODO: move to a separate file
+     */
+    private static Server GetServer(IHoneybadgerClient client)
+    {
+        return new Server
+        {
+            Hostname = client.Options?.HostName,
+            Revision = client.Options?.Revision,
+            EnvironmentName = client.Options?.AppEnvironment,
+            ProjectRoot = client.Options?.ProjectRoot,
+            Time = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
+            Pid = Environment.ProcessId,
+            Stats = null // todo
+        };
     }
 
     /**
@@ -61,11 +78,11 @@ public static class NoticeFactory
 
             result.Add(new ErrorBacktrace
             {
-                Class = null, // todo
+                Class = sf.GetMethod()?.DeclaringType?.FullName,
                 Type = null, // todo
-                Column = sf.GetFileColumnNumber(),
+                Column = sf.GetFileColumnNumber().ToString(),
                 File = sf.GetFileName(),
-                Number = sf.GetFileColumnNumber(),
+                Number = sf.GetFileLineNumber().ToString(),
                 Method = sf.GetMethod()?.Name,
                 Context = null, // todo
                 Source = null, // todo
@@ -96,8 +113,7 @@ public static class NoticeFactory
     {
         return new Breadcrumbs
         {
-            Enabled = false,
-            Trail = null
+            Enabled = false
         };
     }
 }

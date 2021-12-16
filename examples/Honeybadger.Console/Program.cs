@@ -9,6 +9,6 @@ var client = HoneybadgerSdk.Init(new HoneybadgerOptions("80ee8156")
     AppEnvironment = "dotnet-environment"
 });
 
-client.Notify("console app");
+client.Notify("hello from .Net !");
 
 Thread.Sleep(1000);

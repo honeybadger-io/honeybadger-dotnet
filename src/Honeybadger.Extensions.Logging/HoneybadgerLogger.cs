@@ -1,4 +1,4 @@
-using Honeybadger.Schema;
+using Honeybadger.NoticeHelpers;
 using Microsoft.Extensions.Logging;
 
 namespace Honeybadger.Extensions.Logging;

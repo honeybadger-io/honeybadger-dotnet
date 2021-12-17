@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Honeybadger.NoticeHelpers;
 using Honeybadger.Schema;
 
 namespace Honeybadger;
@@ -11,30 +12,64 @@ public class HoneybadgerClient: IHoneybadgerClient
     
     private readonly HttpClient _httpClient;
 
+    private readonly ThreadLocal<Dictionary<string, object>> _context;
+
     public HoneybadgerClient(HoneybadgerOptions options)
     {
         _httpClient = new HttpClient();
+        _context = new ThreadLocal<Dictionary<string, object>>(() => new Dictionary<string, object>());
         Options = options;
         SetupHttpClient();
     }
-
-    public void Notify(Notice notice)
-    {
-        Send(notice);
-    }
-
-    public void Notify(string message)
-    {
-        var notice = NoticeFactory.Make(this, message);
-        Send(notice);
-    }
-
-    public void Notify(Exception error)
-    {
-        var notice = NoticeFactory.Make(this, error);
-        Send(notice);
-    }
     
+    public void Notify(string message, Dictionary<string, object>? context = null)
+    {
+        var notice = NoticeFactory.Make(this, message, GetContext(context));
+        Send(notice);
+    }
+
+    public void Notify(Exception error, Dictionary<string, object>? context = null)
+    {
+        var notice = NoticeFactory.Make(this, error, GetContext(context));
+        Send(notice);
+    }
+
+    public void AddContext(Dictionary<string, object> context)
+    {
+        foreach (var (key,value) in context)
+        {
+            if (_context.Value != null)
+            {
+                _context.Value[key] = value;
+            }
+        }
+    }
+
+    public void ResetContext()
+    {
+        _context.Value?.Clear();
+    }
+
+    private Dictionary<string, object> GetContext(Dictionary<string, object>? context = null)
+    {
+        if (context == null)
+        {
+            return _context.Value ?? new Dictionary<string, object>();
+        }
+
+        if (_context.Value == null)
+        {
+            return context;
+        }
+
+        foreach (var (key, value) in context)
+        {
+            _context.Value[key] = value;
+        }
+        
+        return _context.Value;
+    }
+
     private async void Send(Notice notice)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, "v1/notices");

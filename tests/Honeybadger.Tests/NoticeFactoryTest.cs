@@ -1,6 +1,5 @@
 using System;
-using System.Reflection;
-using Honeybadger.Schema;
+using Honeybadger.NoticeHelpers;
 using Xunit;
 
 namespace Honeybadger.Tests;

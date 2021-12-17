@@ -4,9 +4,9 @@ using Honeybadger;
 
 Console.WriteLine("Hello, World!");
 
-var client = HoneybadgerSdk.Init(new HoneybadgerOptions("80ee8156")
+var client = HoneybadgerSdk.Init(new HoneybadgerOptions
 {
-    AppEnvironment = "dotnet-environment"
+    AppEnvironment = "development"
 });
 
 client.Notify("hello from .Net !");

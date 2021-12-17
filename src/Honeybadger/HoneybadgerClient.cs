@@ -37,8 +37,7 @@ public class HoneybadgerClient: IHoneybadgerClient
     
     private async void Send(Notice notice)
     {
-        // todo: change to route to dotnet
-        var request = new HttpRequestMessage(HttpMethod.Post, "v1/notices/js");
+        var request = new HttpRequestMessage(HttpMethod.Post, "v1/notices");
         var json = JsonSerializer.Serialize(notice, new JsonSerializerOptions
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull

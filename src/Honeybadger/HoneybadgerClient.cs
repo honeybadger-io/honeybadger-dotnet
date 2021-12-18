@@ -6,28 +6,31 @@ using Honeybadger.Schema;
 
 namespace Honeybadger;
 
-public class HoneybadgerClient: IHoneybadgerClient
+public class HoneybadgerClient : IHoneybadgerClient
 {
     public HoneybadgerOptions Options { get; }
-    
+
     private readonly HttpClient _httpClient;
 
     private readonly ThreadLocal<Dictionary<string, object>> _context;
+
+    private readonly ThreadLocal<List<Trail>> _breadcrumbs;
 
     public HoneybadgerClient(HoneybadgerOptions options)
     {
         _httpClient = new HttpClient();
         _context = new ThreadLocal<Dictionary<string, object>>(() => new Dictionary<string, object>());
+        _breadcrumbs = new ThreadLocal<List<Trail>>(() => new List<Trail>());
         Options = options;
         SetupHttpClient();
     }
-    
+
     public void Notify(string message)
     {
         var notice = NoticeFactory.Make(this, message);
         Send(notice);
     }
-    
+
     public void Notify(string message, Dictionary<string, object> context)
     {
         var notice = NoticeFactory.Make(this, message, GetContext(context));
@@ -39,7 +42,7 @@ public class HoneybadgerClient: IHoneybadgerClient
         var notice = NoticeFactory.Make(this, error);
         Send(notice);
     }
-    
+
     public void Notify(Exception error, Dictionary<string, object> context)
     {
         var notice = NoticeFactory.Make(this, error, GetContext(context));
@@ -48,18 +51,51 @@ public class HoneybadgerClient: IHoneybadgerClient
 
     public void AddContext(Dictionary<string, object> context)
     {
-        foreach (var (key,value) in context)
+        if (_context.Value == null)
         {
-            if (_context.Value != null)
-            {
-                _context.Value[key] = value;
-            }
+            return;
+        }
+        
+        foreach (var (key, value) in context)
+        {
+            _context.Value[key] = value;
         }
     }
 
     public void ResetContext()
     {
         _context.Value?.Clear();
+    }
+
+    public void AddBreadcrumb(string message, string? category = null, Dictionary<string, object>? options = null)
+    {
+        if (_breadcrumbs.Value == null || !Options.ReportData || !Options.BreadcrumbsEnabled)
+        {
+            return;
+        }
+
+        var trail = new Trail(message);
+        if (category != null)
+        {
+            trail.Category = category;
+        }
+
+        if (options != null)
+        {
+            trail.Metadata = options;
+        }
+        
+        _breadcrumbs.Value.Add(trail);
+
+        if (_breadcrumbs.Value.Count > Options.MaxBreadcrumbs)
+        {
+            _breadcrumbs.Value.RemoveRange(0, _breadcrumbs.Value.Count - Options.MaxBreadcrumbs);
+        }
+    }
+
+    public void ResetBreadcrumbs()
+    {
+        _breadcrumbs.Value?.Clear();
     }
 
     private Dictionary<string, object> GetContext(Dictionary<string, object>? context = null)
@@ -78,8 +114,13 @@ public class HoneybadgerClient: IHoneybadgerClient
         {
             _context.Value[key] = value;
         }
-        
+
         return _context.Value;
+    }
+
+    Trail[]? IHoneybadgerClient.GetBreadcrumbs()
+    {
+        return Options.BreadcrumbsEnabled ? _breadcrumbs.Value?.ToArray() : null;
     }
 
     private async void Send(Notice notice)
@@ -96,7 +137,7 @@ public class HoneybadgerClient: IHoneybadgerClient
             if (!result.IsSuccessStatusCode)
             {
                 var content = await result.Content.ReadAsStringAsync();
-                Console.WriteLine("Could not send report to Honeybadger | HTTP[{0}]: {1}", result.StatusCode, content);    
+                Console.WriteLine("Could not send report to Honeybadger | HTTP[{0}]: {1}", result.StatusCode, content);
             }
         }
         catch (Exception ex)

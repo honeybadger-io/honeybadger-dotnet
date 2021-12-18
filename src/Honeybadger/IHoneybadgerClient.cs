@@ -1,3 +1,5 @@
+using Honeybadger.Schema;
+
 namespace Honeybadger;
 
 public interface IHoneybadgerClient
@@ -8,5 +10,8 @@ public interface IHoneybadgerClient
     public void Notify(Exception error, Dictionary<string, object> context);
     public void AddContext(Dictionary<string, object> context);
     public void ResetContext();
-    public HoneybadgerOptions? Options { get; }
-}
+    public void AddBreadcrumb(string message, string category, Dictionary<string, object> options);
+    public void ResetBreadcrumbs();
+    public HoneybadgerOptions Options { get; }
+
+    internal Trail[]? GetBreadcrumbs(); }

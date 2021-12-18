@@ -3,9 +3,9 @@ using Honeybadger.Schema;
 
 namespace Honeybadger.NoticeHelpers;
 
-public class ErrorFactory
+public static class ErrorFactory
 {
-    public static Error Get(StackTrace stackTrace, string message, string? className = null, object? context = null)
+    public static Error Get(StackTrace stackTrace, string message, string? className = null)
     {
         return new Error
         {

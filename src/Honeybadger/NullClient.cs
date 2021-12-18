@@ -2,10 +2,10 @@ using Honeybadger.Schema;
 
 namespace Honeybadger;
 
-public class NullClient: IHoneybadgerClient
+public class NullClient : IHoneybadgerClient
 {
     public HoneybadgerOptions Options { get; }
-
+    
     public void Notify(string message)
     {
     }
@@ -28,5 +28,18 @@ public class NullClient: IHoneybadgerClient
 
     public void ResetContext()
     {
+    }
+
+    public void AddBreadcrumb(string message, string category, Dictionary<string, object> options)
+    {
+    }
+
+    public void ResetBreadcrumbs()
+    {
+    }
+    
+    Trail[]? IHoneybadgerClient.GetBreadcrumbs()
+    {
+        return null;
     }
 }

@@ -5,7 +5,7 @@ public class HoneybadgerOptions
     /// <summary>
     /// Required. The project's private API key.
     /// </summary>
-    public string ApiKey { get; init; }
+    public string ApiKey { get; }
 
     /// <summary>
     /// The path to the project's executable code.
@@ -47,6 +47,16 @@ public class HoneybadgerOptions
     /// </summary>
     public string? Revision { get; init; }
 
+    /// <summary>
+    /// Allow/disallow breadcrumbs.
+    /// </summary>
+    public bool BreadcrumbsEnabled { get; init; } = true;
+
+    /// <summary>
+    /// Maximum number of breadcrumbs.
+    /// </summary>
+    public int MaxBreadcrumbs { get; init; } = 40;
+
     public HoneybadgerOptions()
     {
         ApiKey = Environment.GetEnvironmentVariable("HONEYBADGER_API_KEY") ?? "";
@@ -71,16 +81,20 @@ public class HoneybadgerOptions
             DevelopmentEnvironments = devEnvironments;
         }
 
-        var reportDataUseEnv = false;
-        var reportDataLocal = false;
-        var reportDataStr = Environment.GetEnvironmentVariable("HONEYBADGER_REPORT_DATA");
-        if (reportDataStr != null)
-        {
-            reportDataUseEnv = bool.TryParse(reportDataStr, out reportDataLocal);
-        }
-        ReportData = reportDataUseEnv ? reportDataLocal : !DevelopmentEnvironments.Contains(AppEnvironment);
-
+        ReportData = GetBoolFromEnv("HONEYBADGER_REPORT_DATA") ?? !DevelopmentEnvironments.Contains(AppEnvironment);
         Revision = Environment.GetEnvironmentVariable("HONEYBADGER_REVISION");
+
+        var breadcrumbsEnabled = GetBoolFromEnv("HONEYBADGER_BREADCRUMBS_ENABLED");
+        if (breadcrumbsEnabled.HasValue)
+        {
+            BreadcrumbsEnabled = breadcrumbsEnabled.Value;
+        }
+
+        var maxBreadcrumbs = GetIntFromEnv("HONEYBADGER_MAX_BREADCRUMBS");
+        if (maxBreadcrumbs.HasValue)
+        {
+            MaxBreadcrumbs = maxBreadcrumbs.Value;
+        }
     }
 
     public HoneybadgerOptions(string apiKey) : this()
@@ -93,4 +107,30 @@ public class HoneybadgerOptions
         var result = Environment.GetEnvironmentVariable(envName);
         return result?.Split(',').Select(i => i.Trim()).ToArray();
     }
+
+    private static bool? GetBoolFromEnv(string envName)
+    {
+        var readFromEnv = false;
+        var envValue = false;
+        var envValueStr = Environment.GetEnvironmentVariable(envName);
+        if (envValueStr != null)
+        {
+            readFromEnv = bool.TryParse(envValueStr, out envValue);
+        }
+
+        return readFromEnv ? envValue : null;
+    }
+
+    private static int? GetIntFromEnv(string envName)
+    {
+        var readFromEnv = false;
+        var envValue = 0;
+        var envValueStr = Environment.GetEnvironmentVariable(envName);
+        if (envValueStr != null)
+        {
+            readFromEnv = int.TryParse(envValueStr, out envValue);
+        }
+
+        return readFromEnv ? envValue : null;
+    } 
 }

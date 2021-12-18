@@ -40,11 +40,11 @@ public static class NoticeFactory
         var notice = new Notice
         {
             Notifier = NotifierFactory.Get(),
-            Breadcrumbs = BreadcrumbsFactory.Get(),
+            Breadcrumbs = BreadcrumbsFactory.Get(client),
             Details = null, // todo
             Request = RequestFactory.Get(context),
             Server = ServerFactory.Get(client),
-            Error = ErrorFactory.Get(stackTrace ,message, className, context),
+            Error = ErrorFactory.Get(stackTrace ,message, className),
         };
 
         return notice;

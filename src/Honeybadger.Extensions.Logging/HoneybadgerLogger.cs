@@ -1,4 +1,3 @@
-using Honeybadger.NoticeHelpers;
 using Microsoft.Extensions.Logging;
 
 namespace Honeybadger.Extensions.Logging;
@@ -20,9 +19,8 @@ public class HoneybadgerLogger : ILogger
         {
             return;
         }
-
-        var notice = NoticeFactory.Make(_client, exception);
-        _client.Notify(notice);
+        
+        _client.Notify(exception);
     }
 
     public bool IsEnabled(LogLevel logLevel)

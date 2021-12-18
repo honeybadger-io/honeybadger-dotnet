@@ -22,13 +22,25 @@ public class HoneybadgerClient: IHoneybadgerClient
         SetupHttpClient();
     }
     
-    public void Notify(string message, Dictionary<string, object>? context = null)
+    public void Notify(string message)
+    {
+        var notice = NoticeFactory.Make(this, message);
+        Send(notice);
+    }
+    
+    public void Notify(string message, Dictionary<string, object> context)
     {
         var notice = NoticeFactory.Make(this, message, GetContext(context));
         Send(notice);
     }
 
-    public void Notify(Exception error, Dictionary<string, object>? context = null)
+    public void Notify(Exception error)
+    {
+        var notice = NoticeFactory.Make(this, error);
+        Send(notice);
+    }
+    
+    public void Notify(Exception error, Dictionary<string, object> context)
     {
         var notice = NoticeFactory.Make(this, error, GetContext(context));
         Send(notice);

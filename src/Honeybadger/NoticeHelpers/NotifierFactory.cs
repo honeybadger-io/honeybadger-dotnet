@@ -5,14 +5,13 @@ namespace Honeybadger.NoticeHelpers;
 
 public static class NotifierFactory
 {
-    private const string GithubUrl = "https://github.com/subzero10/honeybadger-dotnet";
     public static Notifier Get()
     {
-        return new Notifier
-        {
-            Name = Assembly.GetCallingAssembly().GetName().Name,
-            Url = GithubUrl,
-            Version = Assembly.GetCallingAssembly().GetName().Version?.ToString()
-        };
+        var assembly = Assembly.GetCallingAssembly().GetName();
+        return new Notifier(
+            assembly.Name ?? "ASSEMBLY",
+            assembly.Version?.ToString() ?? "VERSION",
+            Constants.GithubUrl
+        );
     }
 }

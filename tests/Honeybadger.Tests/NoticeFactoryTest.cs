@@ -14,29 +14,25 @@ public class NoticeFactoryTest
         
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);
+        Assert.NotNull(notice.Notifier);
+        Assert.Equal(Constants.GithubUrl, notice.Notifier.Url);
         Assert.Equal("test", notice.Error?.Message);
         Assert.Equal("Honeybadger.Tests.NoticeFactoryTest", notice.Error?.Class);
     }
-    
+
     [Fact]
     public void CreatesNotice_FromException()
     {
         var client = new NullClient();
         var exception = new NamedException("exception");
         var notice = NoticeFactory.Make(client, exception);
-        
+
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);
         Assert.Equal("exception", notice.Error?.Message);
         Assert.Equal("Honeybadger.Tests.NamedException", notice.Error?.Class);
     }
-    
-    [Fact]
-    public void CreatesNotice_FromAnonymousObject()
-    {
-        throw new NotImplementedException();
-    }
-    
+
     [Fact]
     public void CreatesNotice_WithDetails()
     {

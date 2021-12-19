@@ -5,11 +5,18 @@ namespace Honeybadger.Schema;
 public class Notifier
 {
     [JsonPropertyName("name")]
-    public string? Name { get; set; }
+    public string Name { get; }
 
     [JsonPropertyName("url")]
-    public string? Url { get; set; }
+    public string Url { get; }
 
     [JsonPropertyName("version")]
-    public string? Version { get; set; }
+    public string Version { get; }
+
+    public Notifier(string name, string version, string url)
+    {
+        Name = name;
+        Version = version;
+        Url = url;
+    }
 }

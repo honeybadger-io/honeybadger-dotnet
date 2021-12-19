@@ -7,11 +7,9 @@ public static class ErrorFactory
 {
     public static Error Get(StackTrace stackTrace, string message, string? className = null)
     {
-        return new Error
+        var @class = className ?? stackTrace.GetFrame(0)?.GetMethod()?.DeclaringType?.FullName ?? "CLASS"; 
+        return new Error(@class, message, GetBacktraces(stackTrace))
         {
-            Class = className ?? stackTrace.GetFrame(0)?.GetMethod()?.DeclaringType?.FullName,
-            Message = message,
-            Backtrace = GetBacktraces(stackTrace),
             Fingerprint = null, // todo
             Tags = null, // todo
         };

@@ -8,10 +8,10 @@ public static class ServerFactory
     {
         return new Server
         {
-            Hostname = client.Options?.HostName,
-            Revision = client.Options?.Revision,
-            EnvironmentName = client.Options?.AppEnvironment,
-            ProjectRoot = client.Options?.ProjectRoot,
+            Hostname = client.Options.HostName,
+            Revision = client.Options.Revision,
+            EnvironmentName = client.Options.AppEnvironment,
+            ProjectRoot = client.Options.ProjectRoot,
             Stats = null // todo
         };
     }

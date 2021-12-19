@@ -5,20 +5,29 @@ namespace Honeybadger.Schema;
 public class Notice
 {
     [JsonPropertyName("breadcrumbs")]
-    public Breadcrumbs? Breadcrumbs { get; set; }
+    public Breadcrumbs Breadcrumbs { get; set; }
 
     [JsonPropertyName("details")]
     public Dictionary<string, Dictionary<string, object>>? Details { get; set; }
 
     [JsonPropertyName("error")]
-    public Error? Error { get; set; }
+    public Error Error { get; set; }
 
     [JsonPropertyName("notifier")]
-    public Notifier? Notifier { get; set; }
+    public Notifier Notifier { get; set; }
 
     [JsonPropertyName("request")]
-    public Request? Request { get; set; }
+    public Request Request { get; set; }
 
     [JsonPropertyName("server")]
-    public Server? Server { get; set; }
+    public Server Server { get; set; }
+
+    public Notice(Breadcrumbs breadcrumbs, Error error, Notifier notifier, Request request, Server server)
+    {
+        Breadcrumbs = breadcrumbs;
+        Error = error;
+        Notifier = notifier;
+        Request = request;
+        Server = server;
+    }
 }

@@ -5,19 +5,26 @@ namespace Honeybadger.Schema;
 public class Error
 {
     [JsonPropertyName("backtrace")]
-    public ErrorBacktrace[]? Backtrace { get; set; }
+    public ErrorBacktrace[] Backtrace { get; set; }
     
     [JsonPropertyName("class")]
-    public string? Class { get; set; }
+    public string Class { get; set; }
 
     [JsonPropertyName("fingerprint")]
     public string? Fingerprint { get; set; }
 
     [JsonPropertyName("message")]
-    public string? Message { get; set; }
+    public string Message { get; set; }
     
     [JsonPropertyName("tags")]
     public string[]? Tags { get; set; }
+
+    public Error(string @class, string message, ErrorBacktrace[] backtrace)
+    {
+        Class = @class;
+        Message = message;
+        Backtrace = backtrace;
+    }
 }
 
 public class ErrorBacktrace

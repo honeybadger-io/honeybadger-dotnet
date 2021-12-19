@@ -15,8 +15,8 @@ public static class NoticeFactory
     /// <returns></returns>
     public static Notice Make(IHoneybadgerClient client, string message, Dictionary<string, object>? context = null)
     {
-        var stackTrace = new StackTrace(2,true);
-        
+        var stackTrace = new StackTrace(2, true);
+
         return Make(client, message, stackTrace, context: context);
     }
 
@@ -31,22 +31,22 @@ public static class NoticeFactory
     {
         // todo: Should we skip 2 frames here?
         var stackTrace = error.StackTrace == null ? new StackTrace(true) : new StackTrace(error, true);
-        
+
         return Make(client, error.Message, stackTrace, error.GetType().FullName, context);
     }
 
-    private static Notice Make(IHoneybadgerClient client, string message, StackTrace stackTrace, string? className = null, Dictionary<string, object>? context = null)
+    private static Notice Make(IHoneybadgerClient client, string message, StackTrace stackTrace,
+        string? className = null, Dictionary<string, object>? context = null)
     {
-        var notice = new Notice
+        return new Notice(
+            BreadcrumbsFactory.Get(client),
+            ErrorFactory.Get(stackTrace, message, className),
+            NotifierFactory.Get(),
+            RequestFactory.Get(context),
+            ServerFactory.Get(client)
+        )
         {
-            Notifier = NotifierFactory.Get(),
-            Breadcrumbs = BreadcrumbsFactory.Get(client),
             Details = null, // todo
-            Request = RequestFactory.Get(context),
-            Server = ServerFactory.Get(client),
-            Error = ErrorFactory.Get(stackTrace ,message, className),
         };
-
-        return notice;
     }
 }

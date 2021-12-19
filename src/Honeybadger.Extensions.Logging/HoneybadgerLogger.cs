@@ -13,23 +13,37 @@ public class HoneybadgerLogger : ILogger
         _options = options;
     }
 
-    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
+        Func<TState, Exception?, string> formatter)
     {
-        if (!IsEnabled(logLevel) || exception == null)
+        if (!IsEnabled(logLevel))
         {
             return;
         }
-        
-        _client.Notify(exception);
+
+        var message = formatter(state, exception);
+        _client.AddBreadcrumb(
+            message,
+            "log",
+            new Dictionary<string, object?>()
+            {
+                {"Level", logLevel},
+            }
+        );
+
+        if (ShouldReport(logLevel) && exception != null)
+        {
+            _client.Notify(exception);
+        }
     }
 
     public bool IsEnabled(LogLevel logLevel)
     {
-        if (_client is NullClient)
-        {
-            return false;
-        }
-        
+        return _client is not NullClient;
+    }
+
+    private bool ShouldReport(LogLevel logLevel)
+    {
         // todo: need to check more options here
         return _options.ReportData && logLevel is LogLevel.Error or LogLevel.Critical;
     }

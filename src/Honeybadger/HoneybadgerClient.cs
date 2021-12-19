@@ -39,6 +39,12 @@ public class HoneybadgerClient : IHoneybadgerClient
 
     public void Notify(Exception error)
     {
+        AddBreadcrumb("Honeybadger Notice", "notice", new Dictionary<string, object?>()
+        {
+            {"Message", error.Message},
+            {"Name", error.GetType().FullName ?? "Error"},
+            {"Stack", error.StackTrace}
+        });
         var notice = NoticeFactory.Make(this, error);
         Send(notice);
     }
@@ -67,7 +73,7 @@ public class HoneybadgerClient : IHoneybadgerClient
         _context.Value?.Clear();
     }
 
-    public void AddBreadcrumb(string message, string? category = null, Dictionary<string, object>? options = null)
+    public void AddBreadcrumb(string message, string? category = null, Dictionary<string, object?>? options = null)
     {
         if (_breadcrumbs.Value == null || !Options.ReportData || !Options.BreadcrumbsEnabled)
         {

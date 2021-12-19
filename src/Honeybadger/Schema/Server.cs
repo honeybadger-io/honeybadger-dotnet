@@ -11,7 +11,7 @@ public class Server
     public string? Hostname { get; set; }
 
     [JsonPropertyName("pid")]
-    public long? Pid { get; set; }
+    public long? Pid { get; }
 
     [JsonPropertyName("project_root")]
     public string? ProjectRoot { get; set; }
@@ -23,7 +23,13 @@ public class Server
     public Stats? Stats { get; set; }
 
     [JsonPropertyName("time")]
-    public string? Time { get; set; }
+    public string Time { get; }
+
+    public Server()
+    {
+        Time = DateTime.UtcNow.ToString(Constants.DateTimeFormat);
+        Pid = Environment.ProcessId;
+    }
 }
 
 public class Stats

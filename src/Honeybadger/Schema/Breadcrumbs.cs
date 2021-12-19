@@ -20,17 +20,17 @@ public class Trail
     public string Message { get; set; }
 
     [JsonPropertyName("metadata")]
-    public Dictionary<string, object>? Metadata { get; set; }
+    public Dictionary<string, object?>? Metadata { get; set; }
 
     /// <summary>
     /// iso8601 formatted with milliseconds
     /// </summary>
     [JsonPropertyName("timestamp")]
-    public DateTimeOffset Timestamp { get; set; }
+    public string Timestamp { get; set; }
 
     public Trail(string message)
     {
         Message = message;
-        Timestamp = DateTimeOffset.UtcNow;
+        Timestamp = DateTime.UtcNow.ToString(Constants.DateTimeFormat);
     }
 }

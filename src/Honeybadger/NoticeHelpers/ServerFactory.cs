@@ -1,4 +1,3 @@
-using System.Globalization;
 using Honeybadger.Schema;
 
 namespace Honeybadger.NoticeHelpers;
@@ -13,8 +12,6 @@ public static class ServerFactory
             Revision = client.Options?.Revision,
             EnvironmentName = client.Options?.AppEnvironment,
             ProjectRoot = client.Options?.ProjectRoot,
-            Time = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture),
-            Pid = Environment.ProcessId,
             Stats = null // todo
         };
     }

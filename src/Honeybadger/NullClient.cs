@@ -30,7 +30,7 @@ public class NullClient : IHoneybadgerClient
     {
     }
 
-    public void AddBreadcrumb(string message, string category, Dictionary<string, object> options)
+    public void AddBreadcrumb(string message, string category, Dictionary<string, object?> options)
     {
     }
 

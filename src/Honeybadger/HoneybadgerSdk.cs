@@ -6,12 +6,13 @@ public static class HoneybadgerSdk
 
     public static IHoneybadgerClient Init(HoneybadgerOptions options)
     {
-        if (!options.ReportData)
+        if (!options.ReportData || _client is HoneybadgerClient)
         {
             return _client;
         }
 
         _client = new HoneybadgerClient(options);
+        
         return _client;
     }
 }

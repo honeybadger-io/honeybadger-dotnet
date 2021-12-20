@@ -2,16 +2,16 @@ namespace Honeybadger;
 
 public static class HoneybadgerSdk
 {
-    private static IHoneybadgerClient _client = new NullClient();
+    private static IHoneybadgerClient? _client = null;
 
     public static IHoneybadgerClient Init(HoneybadgerOptions options)
     {
-        if (!options.ReportData || _client is HoneybadgerClient)
+        if (_client is HoneybadgerClient)
         {
             return _client;
         }
 
-        _client = new HoneybadgerClient(options);
+        _client = new HoneybadgerClient(options, new HttpClient());
         
         return _client;
     }

@@ -16,9 +16,9 @@ public class HoneybadgerClient : IHoneybadgerClient
 
     private readonly ThreadLocal<List<Trail>> _breadcrumbs;
 
-    public HoneybadgerClient(HoneybadgerOptions options)
+    public HoneybadgerClient(HoneybadgerOptions options, HttpClient httpClient)
     {
-        _httpClient = new HttpClient();
+        _httpClient = httpClient;
         _context = new ThreadLocal<Dictionary<string, object>>(() => new Dictionary<string, object>());
         _breadcrumbs = new ThreadLocal<List<Trail>>(() => new List<Trail>());
         Options = options;

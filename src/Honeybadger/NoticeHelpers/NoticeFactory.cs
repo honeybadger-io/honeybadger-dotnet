@@ -15,7 +15,13 @@ public static class NoticeFactory
     /// <returns></returns>
     public static Notice Make(IHoneybadgerClient client, string message, Dictionary<string, object>? context = null)
     {
-        var stackTrace = new StackTrace(2, true);
+        var stackTrace = new StackTrace(1, true);
+        var isFirstFrameInternal =
+            stackTrace.GetFrame(0)?.GetMethod()?.DeclaringType?.FullName?.Contains("HoneybadgerClient");
+        if (isFirstFrameInternal.HasValue && isFirstFrameInternal.Value)
+        {
+            stackTrace = new StackTrace(2, true);
+        }
 
         return Make(client, message, stackTrace, context: context);
     }

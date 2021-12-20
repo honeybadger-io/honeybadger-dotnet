@@ -1,5 +1,5 @@
-using System;
 using Honeybadger.NoticeHelpers;
+using Honeybadger.Schema;
 using Xunit;
 
 namespace Honeybadger.Tests;
@@ -9,21 +9,20 @@ public class NoticeFactoryTest
     [Fact]
     public void CreatesNotice_FromString()
     {
-        var client = new NullClient();
+        var client = HoneybadgerSdk.Init(new HoneybadgerOptions());
         var notice = NoticeFactory.Make(client, "test");
         
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);
-        Assert.NotNull(notice.Notifier);
-        Assert.Equal(Constants.GithubUrl, notice.Notifier.Url);
         Assert.Equal("test", notice.Error?.Message);
         Assert.Equal("Honeybadger.Tests.NoticeFactoryTest", notice.Error?.Class);
+        AssertNotifier(notice);
     }
 
     [Fact]
     public void CreatesNotice_FromException()
     {
-        var client = new NullClient();
+        var client = HoneybadgerSdk.Init(new HoneybadgerOptions());
         var exception = new NamedException("exception");
         var notice = NoticeFactory.Make(client, exception);
 
@@ -31,30 +30,12 @@ public class NoticeFactoryTest
         Assert.NotNull(notice.Error);
         Assert.Equal("exception", notice.Error?.Message);
         Assert.Equal("Honeybadger.Tests.NamedException", notice.Error?.Class);
+        AssertNotifier(notice);
     }
 
-    [Fact]
-    public void CreatesNotice_WithDetails()
+    private static void AssertNotifier(Notice notice)
     {
-        throw new NotImplementedException();
+        Assert.NotNull(notice.Notifier);
+        Assert.Equal(Constants.GithubUrl, notice.Notifier.Url);
     }
-    
-    [Fact]
-    public void CreatesNotice_WithNotifier()
-    {
-        throw new NotImplementedException();
-    }
-    
-    [Fact]
-    public void CreatesNotice_WithRequestAndServer()
-    {
-        throw new NotImplementedException();
-    }
-    
-    [Fact]
-    public void CreatesNotice_WithError()
-    {
-        throw new NotImplementedException();
-    }
-
 }

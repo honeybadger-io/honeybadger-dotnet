@@ -12,5 +12,5 @@ public class HoneybadgerLoggingOptions : HoneybadgerOptions
     /// <summary>
     /// Logs with this level or higher will be reported to Honeybadger
     /// </summary>
-    public LogLevel MinimumEventLevel { get; set; } = LogLevel.Error;
+    public LogLevel MinimumNoticeLevel { get; set; } = LogLevel.Error;
 }

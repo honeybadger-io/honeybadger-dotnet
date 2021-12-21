@@ -1,3 +1,4 @@
+using System;
 using Honeybadger.NoticeHelpers;
 using Honeybadger.Schema;
 using Xunit;
@@ -31,6 +32,24 @@ public class NoticeFactoryTest
         Assert.Equal("exception", notice.Error?.Message);
         Assert.Equal("Honeybadger.Tests.NamedException", notice.Error?.Class);
         AssertNotifier(notice);
+    }
+
+    [Fact]
+    public void CreatesNotice_WithBreadcrumbs()
+    {
+        throw new NotImplementedException();
+    }
+
+    [Fact]
+    public void CreatesNotice_WithMaxBreadcrumbs()
+    {
+        throw new NotImplementedException();
+    }
+    
+    [Fact]
+    public void CreatesNotice_WithContext()
+    {
+        throw new NotImplementedException();
     }
 
     private static void AssertNotifier(Notice notice)

@@ -20,22 +20,22 @@ public class HoneybadgerOptions
     /// <summary>
     /// The hostname of the system.
     /// </summary>
-    public string HostName { get; init; } = "hostname";
+    public string HostName { get; init; }
     
     /// <summary>
     /// The base API Endpoint
     /// </summary>
-    public Uri Endpoint { get; init; } = new Uri("https://api.honeybadger.io");
+    public Uri Endpoint { get; init; } = new(Constants.DefaultApiEndpoint);
 
     /// <summary>
     /// A list of keys whose values are replaced with "[FILTERED]" in sensitive data objects (like request parameters).
     /// </summary>
-    public string[] FilterKeys { get; init; } = {"password", "password_confirmation", "credit_card"};
+    public string[] FilterKeys { get; init; } = Constants.DefaultFilterKeys;
 
     /// <summary>
     /// A list of development environments. When environment is in the list, log errors locally instead of reporting.
     /// </summary>
-    public string[] DevelopmentEnvironments { get; init; } = {"test", "development"};
+    public string[] DevelopmentEnvironments { get; init; } = Constants.DefaultDevelopmentEnvironments;
     
     /// <summary>
     /// Explicit override for development environments check; when true, always report errors.
@@ -62,7 +62,7 @@ public class HoneybadgerOptions
         ApiKey = Environment.GetEnvironmentVariable("HONEYBADGER_API_KEY") ?? "";
         ProjectRoot = Environment.GetEnvironmentVariable("HONEYBADGER_PROJECT_ROOT");
         AppEnvironment = Environment.GetEnvironmentVariable("HONEYBADGER_APP_ENVIRONMENT");
-        HostName = Environment.GetEnvironmentVariable("HONEYBADGER_HOSTNAME") ?? "hostname";
+        HostName = Environment.GetEnvironmentVariable("HONEYBADGER_HOSTNAME") ?? Constants.DefaultHostname;
         var endpoint = Environment.GetEnvironmentVariable("HONEYBADGER_ENDPOINT");
         if (endpoint != null)
         {

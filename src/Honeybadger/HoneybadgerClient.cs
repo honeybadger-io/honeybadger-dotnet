@@ -1,3 +1,4 @@
+using System.Formats.Asn1;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -27,8 +28,7 @@ public class HoneybadgerClient : IHoneybadgerClient
 
     public void Notify(string message)
     {
-        var notice = NoticeFactory.Make(this, message);
-        Send(notice);
+        Notify(message, new Dictionary<string, object>());
     }
 
     public void Notify(string message, Dictionary<string, object> context)
@@ -39,14 +39,7 @@ public class HoneybadgerClient : IHoneybadgerClient
 
     public void Notify(Exception error)
     {
-        AddBreadcrumb("Honeybadger Notice", "notice", new Dictionary<string, object?>()
-        {
-            {"Message", error.Message},
-            {"Name", error.GetType().FullName ?? "Error"},
-            {"Stack", error.StackTrace}
-        });
-        var notice = NoticeFactory.Make(this, error);
-        Send(notice);
+        Notify(error, new Dictionary<string, object>());
     }
 
     public void Notify(Exception error, Dictionary<string, object> context)
@@ -131,6 +124,7 @@ public class HoneybadgerClient : IHoneybadgerClient
 
     private async void Send(Notice notice)
     {
+        Console.WriteLine("Ready to send report to Honeybadger");
         var request = new HttpRequestMessage(HttpMethod.Post, "v1/notices");
         var json = JsonSerializer.Serialize(notice, new JsonSerializerOptions
         {
@@ -144,6 +138,10 @@ public class HoneybadgerClient : IHoneybadgerClient
             {
                 var content = await result.Content.ReadAsStringAsync();
                 Console.WriteLine("Could not send report to Honeybadger | HTTP[{0}]: {1}", result.StatusCode, content);
+            }
+            else
+            {
+                Console.WriteLine("Report sent to Honeybadger");
             }
         }
         catch (Exception ex)

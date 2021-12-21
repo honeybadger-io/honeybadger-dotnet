@@ -61,7 +61,7 @@ public class HoneybadgerOptions
     {
         ApiKey = Environment.GetEnvironmentVariable("HONEYBADGER_API_KEY") ?? "";
         ProjectRoot = Environment.GetEnvironmentVariable("HONEYBADGER_PROJECT_ROOT");
-        AppEnvironment = Environment.GetEnvironmentVariable("HONEYBADGER_APP_ENVIRONMENT");
+        AppEnvironment = (Environment.GetEnvironmentVariable("HONEYBADGER_APP_ENVIRONMENT") ?? "development").ToLower();
         HostName = Environment.GetEnvironmentVariable("HONEYBADGER_HOSTNAME") ?? Constants.DefaultHostname;
         var endpoint = Environment.GetEnvironmentVariable("HONEYBADGER_ENDPOINT");
         if (endpoint != null)

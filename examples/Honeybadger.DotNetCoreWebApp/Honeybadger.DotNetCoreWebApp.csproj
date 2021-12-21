@@ -6,4 +6,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Honeybadger.DotNetCore\Honeybadger.DotNetCore.csproj" />
+    </ItemGroup>
+
 </Project>

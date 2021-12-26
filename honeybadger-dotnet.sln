@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger.Console", "exam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger.DotNetCoreWebApp", "examples\Honeybadger.DotNetCoreWebApp\Honeybadger.DotNetCoreWebApp.csproj", "{8E0CD14F-BD8A-42B5-9A23-5E4C9D7ECBF7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger.DotNetCoreWebApp.Logger", "examples\Honeybadger.DotNetCoreWebApp.Logger\Honeybadger.DotNetCoreWebApp.Logger.csproj", "{938C7968-B408-4A5B-8587-9084A43C8C6A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{8E0CD14F-BD8A-42B5-9A23-5E4C9D7ECBF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E0CD14F-BD8A-42B5-9A23-5E4C9D7ECBF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E0CD14F-BD8A-42B5-9A23-5E4C9D7ECBF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{938C7968-B408-4A5B-8587-9084A43C8C6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{938C7968-B408-4A5B-8587-9084A43C8C6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{938C7968-B408-4A5B-8587-9084A43C8C6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{938C7968-B408-4A5B-8587-9084A43C8C6A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,5 +90,6 @@ Global
 		{C76193FD-7EEC-4B5B-B3BA-3854C847A8C2} = {798689AD-BF0E-429E-BADA-5EFBFE5BFD8A}
 		{AD4D0F8B-CE5E-4782-9CF4-BDDA060DBA02} = {89C7DC71-C55D-40D7-94F2-2F2F7C40FAC1}
 		{8E0CD14F-BD8A-42B5-9A23-5E4C9D7ECBF7} = {89C7DC71-C55D-40D7-94F2-2F2F7C40FAC1}
+		{938C7968-B408-4A5B-8587-9084A43C8C6A} = {89C7DC71-C55D-40D7-94F2-2F2F7C40FAC1}
 	EndGlobalSection
 EndGlobal

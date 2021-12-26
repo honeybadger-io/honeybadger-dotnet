@@ -4,18 +4,22 @@ namespace Honeybadger.Extensions.Logging;
 
 public class HoneybadgerLogger : ILogger
 {
-    private readonly IHoneybadgerClient _client;
-    private readonly HoneybadgerLoggingOptions _options;
+    private IHoneybadgerClient? _client = null;
+    private readonly Func<HoneybadgerLoggingOptions> _getOptions;
 
-    internal HoneybadgerLogger(HoneybadgerLoggingOptions options)
+    internal HoneybadgerLogger(Func<HoneybadgerLoggingOptions> getCurrentConfig)
     {
-        _client = HoneybadgerSdk.Init(options);
-        _options = options;
+        _getOptions = getCurrentConfig;
     }
 
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
         Func<TState, Exception?, string> formatter)
     {
+        if (_client == null)
+        {
+            _client = HoneybadgerSdk.Init(_getOptions());
+        }
+        
         if (!IsEnabled(logLevel))
         {
             return;
@@ -42,22 +46,19 @@ public class HoneybadgerLogger : ILogger
 
     public bool IsEnabled(LogLevel logLevel)
     {
-        return _options.ReportData;
+        return _getOptions().ReportData;
     }
+
+    public IDisposable BeginScope<TState>(TState state) => default;
 
     private bool ShouldReport(LogLevel logLevel)
     {
         // todo: need to check more options here
-        return _options.MinimumNoticeLevel >= logLevel;
+        return _getOptions().MinimumNoticeLevel >= logLevel;
     }
 
     private bool ShouldAddBreadcrumb(LogLevel logLevel)
     {
-        return _options.MinimumBreadcrumbLevel >= logLevel;
-    }
-
-    public IDisposable BeginScope<TState>(TState state)
-    {
-        throw new NotImplementedException();
+        return _getOptions().MinimumBreadcrumbLevel >= logLevel;
     }
 }

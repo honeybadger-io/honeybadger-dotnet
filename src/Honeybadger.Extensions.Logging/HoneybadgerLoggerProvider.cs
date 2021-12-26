@@ -1,25 +1,26 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Honeybadger.Extensions.Logging;
 
 public class HoneybadgerLoggerProvider : ILoggerProvider
 {
-    private IHoneybadgerClient _client;
-    private HoneybadgerLoggingOptions _options;
+    private HoneybadgerLoggingOptions _currentConfig;
+    private readonly IDisposable _onChangeToken;
 
-    public HoneybadgerLoggerProvider(IHoneybadgerClient client, HoneybadgerLoggingOptions options)
+    public HoneybadgerLoggerProvider(IOptionsMonitor<HoneybadgerLoggingOptions> config)
     {
-        _client = client;
-        _options = options;
+        _currentConfig = config.CurrentValue;
+        _onChangeToken = config.OnChange(updatedConfig => _currentConfig = updatedConfig);
     }
-
-    public void Dispose()
-    {
-        throw new NotImplementedException();
-    }
-
+    
     public ILogger CreateLogger(string categoryName)
     {
-        throw new NotImplementedException();
+        return new HoneybadgerLogger(() => _currentConfig);
+    }
+    
+    public void Dispose()
+    {
+        _onChangeToken.Dispose();
     }
 }

@@ -9,16 +9,6 @@ namespace Honeybadger.DotNetCore;
 
 public class HoneybadgerStartupFilter : IStartupFilter
 {
-    static HoneybadgerStartupFilter()
-    {
-        // if app env variable is not set, read the value from the .net core variable
-        if (Environment.GetEnvironmentVariable("HONEYBADGER_APP_ENVIRONMENT") == null)
-        {
-            Environment.SetEnvironmentVariable("HONEYBADGER_APP_ENVIRONMENT",
-                Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
-        }
-    }
-
     public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
     {
         return builder =>

@@ -1,5 +1,6 @@
 using Honeybadger;
 using Honeybadger.DotNetCore;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHoneybadger();

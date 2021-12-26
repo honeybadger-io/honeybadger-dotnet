@@ -21,7 +21,7 @@ public class HoneybadgerOptions
     /// The hostname of the system.
     /// </summary>
     public string HostName { get; init; }
-    
+
     /// <summary>
     /// The base API Endpoint
     /// </summary>
@@ -36,7 +36,7 @@ public class HoneybadgerOptions
     /// A list of development environments. When environment is in the list, log errors locally instead of reporting.
     /// </summary>
     public string[] DevelopmentEnvironments { get; init; } = Constants.DefaultDevelopmentEnvironments;
-    
+
     /// <summary>
     /// Explicit override for development environments check; when true, always report errors.
     /// </summary>
@@ -61,7 +61,8 @@ public class HoneybadgerOptions
     {
         ApiKey = Environment.GetEnvironmentVariable("HONEYBADGER_API_KEY") ?? "";
         ProjectRoot = Environment.GetEnvironmentVariable("HONEYBADGER_PROJECT_ROOT");
-        AppEnvironment = (Environment.GetEnvironmentVariable("HONEYBADGER_APP_ENVIRONMENT") ?? "development").ToLower();
+        AppEnvironment = (Environment.GetEnvironmentVariable("HONEYBADGER_APP_ENVIRONMENT") ??
+                          Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "development").ToLower();
         HostName = Environment.GetEnvironmentVariable("HONEYBADGER_HOSTNAME") ?? Constants.DefaultHostname;
         var endpoint = Environment.GetEnvironmentVariable("HONEYBADGER_ENDPOINT");
         if (endpoint != null)
@@ -74,7 +75,7 @@ public class HoneybadgerOptions
         {
             FilterKeys = filterKeys;
         }
-        
+
         var devEnvironments = GetArrayFromEnv("HONEYBADGER_DEVELOPMENT_ENVIRONMENTS");
         if (devEnvironments != null)
         {
@@ -132,5 +133,5 @@ public class HoneybadgerOptions
         }
 
         return readFromEnv ? envValue : null;
-    } 
+    }
 }

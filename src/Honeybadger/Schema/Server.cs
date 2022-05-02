@@ -1,3 +1,6 @@
+#if !NET6
+using System.Diagnostics;
+#endif
 using System.Text.Json.Serialization;
 
 namespace Honeybadger.Schema;
@@ -28,7 +31,12 @@ public class Server
     public Server()
     {
         Time = DateTime.UtcNow.ToString(Constants.DateTimeFormat);
-        Pid = Environment.ProcessId;
+#if NET6
+    Pid = Environment.ProcessId;
+#else
+        Pid = Process.GetCurrentProcess().Id;
+#endif
+        
     }
 }
 

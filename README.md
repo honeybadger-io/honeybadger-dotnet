@@ -4,12 +4,12 @@ This is the .Net Honeybadger Notifier.
 
 ## Supported .Net versions:
 
-| Family | Version |
-|--------|-----|
-| .Net | 6.0 |
-|.Net Standard| n/a |
-|.Net Core| n/a |
-|.Net Framework| n/a |
+| Family         | Version  |
+|----------------|----------|
+| .Net           | 5.0, 6.0 |
+| .Net Standard  | 2.0, 2.1 |
+| .Net Core      | 3.0, 3.1 |
+| .Net Framework | 4.6.1    |
 
 ## Getting Started
 
@@ -84,10 +84,10 @@ See example project in `examples/Honeybadger.Console`.
 ## TODO
 - [ ] Publish _.Net Core_ Nuget to nuget.org
 - [ ] Publish _Honeybadger Logging Provider_ Nuget to nuget.org
-- [ ] Target .Net 5.0
-- [ ] Target .Net Core 3.1
-- [ ] Target .Net Standard 2.1
-- [ ] Target .Net Standard 2.0 (?)
+- [x] Target .Net 5.0
+- [x] Target .Net Core 3.1
+- [x] Target .Net Standard 2.1
+- [x] Target .Net Standard 2.0
 - [ ] Support more features of the [Honeybadger Client Library Spec](https://www.notion.so/honeybadger/Client-Library-Spec-aa891332f7874196aa0695b6d38dca66). Tracked [here](https://pc-hiteq-software.monday.com/boards/1981156519/). 
 
 ### References

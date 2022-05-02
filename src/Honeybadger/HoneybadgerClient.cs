@@ -54,9 +54,9 @@ public class HoneybadgerClient : IHoneybadgerClient
             return;
         }
         
-        foreach (var (key, value) in context)
+        foreach (var entry in context)
         {
-            _context.Value[key] = value;
+            _context.Value[entry.Key] = entry.Value;
         }
     }
 
@@ -108,9 +108,9 @@ public class HoneybadgerClient : IHoneybadgerClient
             return context;
         }
 
-        foreach (var (key, value) in context)
+        foreach (var entry in context)
         {
-            _context.Value[key] = value;
+            _context.Value[entry.Key] = entry.Value;
         }
 
         return _context.Value;

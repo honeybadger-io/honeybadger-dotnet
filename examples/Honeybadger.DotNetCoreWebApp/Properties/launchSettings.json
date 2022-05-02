@@ -14,7 +14,7 @@
       "launchBrowser": true,
       "applicationUrl": "https://localhost:7260;http://localhost:5177",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "blabla",
+        "ASPNETCORE_ENVIRONMENT": "development",
         "HONEYBADGER_API_KEY": "hbp_besml32bFCbMcIsL8QDgGeLqivUuD3472J38"
       }
     },

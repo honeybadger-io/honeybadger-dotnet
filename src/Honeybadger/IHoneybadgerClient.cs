@@ -10,7 +10,7 @@ public interface IHoneybadgerClient
     public void Notify(Exception error, Dictionary<string, object> context);
     public void AddContext(Dictionary<string, object> context);
     public void ResetContext();
-    public void AddBreadcrumb(string message, string category, Dictionary<string, object?> options);
+    public void AddBreadcrumb(string message, string category, Dictionary<string, object?>? options = null);
     public void ResetBreadcrumbs();
     public HoneybadgerOptions Options { get; }
 

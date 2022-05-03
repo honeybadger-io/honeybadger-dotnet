@@ -33,17 +33,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger.DotNetCoreWebAp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger.DotNetCoreWebApp.Logger", "examples\Honeybadger.DotNetCoreWebApp.Logger\Honeybadger.DotNetCoreWebApp.Logger.csproj", "{938C7968-B408-4A5B-8587-9084A43C8C6A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{E3A37898-6F77-449B-90BB-CD5542912906}"
-	ProjectSection(SolutionItems) = preProject
-		dotnet-tools.json = .config\dotnet-tools.json
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".husky", ".husky", "{B836B05A-3C07-4D6E-BB1F-458E3A2EF03D}"
-	ProjectSection(SolutionItems) = preProject
-		pre-commit = .husky\pre-commit
-		task-runner.json = .husky\task-runner.json
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,7 +92,5 @@ Global
 		{AD4D0F8B-CE5E-4782-9CF4-BDDA060DBA02} = {89C7DC71-C55D-40D7-94F2-2F2F7C40FAC1}
 		{8E0CD14F-BD8A-42B5-9A23-5E4C9D7ECBF7} = {89C7DC71-C55D-40D7-94F2-2F2F7C40FAC1}
 		{938C7968-B408-4A5B-8587-9084A43C8C6A} = {89C7DC71-C55D-40D7-94F2-2F2F7C40FAC1}
-		{B836B05A-3C07-4D6E-BB1F-458E3A2EF03D} = {9D7E2F87-D6F4-4BBB-8980-87D0A8344C74}
-		{E3A37898-6F77-449B-90BB-CD5542912906} = {9D7E2F87-D6F4-4BBB-8980-87D0A8344C74}
 	EndGlobalSection
 EndGlobal

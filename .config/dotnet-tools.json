@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "versionize": {
+      "version": "1.13.0",
+      "commands": [
+        "versionize"
+      ]
+    },
+    "husky": {
+      "version": "0.4.2",
+      "commands": [
+        "husky"
+      ]
+    }
+  }
+}

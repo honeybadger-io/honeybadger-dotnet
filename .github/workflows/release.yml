@@ -15,8 +15,11 @@ jobs:
           token: ${{ secrets.GH_RELEASE_PAT }}
           fetch-depth: 0
           
-      - name: Install Versionize
-        run: dotnet tool restore
+      # dotnet nuget list source is to fix race condition in dotnet tool restore. Remove when https://github.com/NuGet/Home/issues/7503 is fixed.
+      - name: Install dotnet tools
+        run: |
+          dotnet nuget list source
+          dotnet tool restore
 
       - name: Versionize
         run: dotnet versionize

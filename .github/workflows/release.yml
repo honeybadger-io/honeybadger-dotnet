@@ -2,9 +2,7 @@ name: Release
 on: workflow_dispatch
 jobs:
   test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: honeybadger-io/honeybadger-dotnet/.github/workflows/ci.yml@main
+    uses: honeybadger-io/honeybadger-dotnet/.github/workflows/ci.yml@main
         
   release:
     needs: [ test ]

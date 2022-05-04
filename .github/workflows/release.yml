@@ -27,7 +27,7 @@ jobs:
         run: dotnet pack --configuration Release
         
       - name: Publish Nugets
-        run: dotnet nuget push src/Honeybadger/bin/Release/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }}
+        run: dotnet nuget push src/Honeybadger/bin/Release/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{ secrets.NUGET_API_KEY }}
           
       - name: Push tags on git
         run: git push --follow-tags origin

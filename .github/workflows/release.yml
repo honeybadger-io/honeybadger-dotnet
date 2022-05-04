@@ -4,7 +4,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: ./github/workflows/ci.yml
+      - uses: honeybadger-io/honeybadger-dotnet/.github/workflows/ci.yml@main
         
   release:
     needs: [ test ]

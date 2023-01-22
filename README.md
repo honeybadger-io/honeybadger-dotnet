@@ -13,12 +13,12 @@ This is the .Net Honeybadger Notifier.
 
 ## Getting Started
 
-Clone/Fork. Since the project is currently at MVP stage and not yet published on nuget.org, the best way to use it would be to
-clone or fork it and build as a local project in your solution.
-
 ### For .Net Core Web App
 
-1. Reference the `Honeybadger.DotNetCoreWebApp` project.
+1. Install Honeybadger.DotNetCore from Nuget
+```
+dotnet add package Honeybadger.DotNetCore
+```
 2. Register the _Honeybadger Middleware_:
 ```c#
 var builder = WebApplication.CreateBuilder(args);
@@ -34,7 +34,7 @@ app.MapGet("/", ([FromServices] IHoneybadgerClient client) =>
     return "Hello World!";
 });
 ```
-3. Any unhandled exceptions should be reported to Honeybadger automatically:
+2. Any unhandled exceptions should be reported to Honeybadger automatically:
 ```c#
 app.MapGet("/debug", () =>
 {
@@ -46,7 +46,10 @@ See example project in `examples/Honeybadger.DotNetCoreWebApp`.
 
 ### As a custom logging provider 
 
-1. Reference the `Honeybadger.Extensions.Logging` project.
+1. Install Honeybadger.Extensions.Logging from Nuget
+```
+dotnet add package Honeybadger.Extensions.Logging
+```
 2. Register the custom logging provider:
 ```c#
 var builder = WebApplication.CreateBuilder(args);
@@ -64,12 +67,15 @@ app.MapGet("/notify", ([FromServices] ILogger logger) =>
 
 See example project in `examples/Honeybadger.DotNetCoreWebApp.Logger`.
 
-### Using the client manually
+### Using the SDK manually
 
-1. Reference the `Honeybadger` project.
+1. Install the [Honeybadger Nuget](https://www.nuget.org/packages/Honeybadger).
+```
+dotnet add package Honeybadger
+```
 2. Initialize the _Honeybadger Client_:
 ```c#
-var client = HoneybadgerSdk.Init(new HoneybadgerOptions
+var client = HoneybadgerSdk.Init(new HoneybadgerOptions("apiKey")
 {
     AppEnvironment = "development"
 });
@@ -81,17 +87,50 @@ client.Notify("hello from .Net !");
 
 See example project in `examples/Honeybadger.Console`.
 
-## TODO
-- [ ] Publish _.Net Core_ Nuget to nuget.org
-- [ ] Publish _Honeybadger Logging Provider_ Nuget to nuget.org
-- [x] Target .Net 5.0
-- [x] Target .Net Core 3.1
-- [x] Target .Net Standard 2.1
-- [x] Target .Net Standard 2.0
-- [ ] Support more features of the [Honeybadger Client Library Spec](https://www.notion.so/honeybadger/Client-Library-Spec-aa891332f7874196aa0695b6d38dca66). Tracked [here](https://pc-hiteq-software.monday.com/boards/1981156519/). 
+## Changelog
 
-### References
-- Create a [class library](https://docs.microsoft.com/en-us/nuget/quickstart/create-and-publish-a-package-using-the-dotnet-cli) project
-- StackTrack class
-- [Honeybadger Client Library Spec](https://www.notion.so/honeybadger/Client-Library-Spec-aa891332f7874196aa0695b6d38dca66)
-- [Honeybadger Crystal](https://github.com/honeybadger-io/honeybadger-crystal) - Recently Released
+Changelog is automatically generated using [Conventional Commits](https://www.conventionalcommits.org/) with [versionize](https://github.com/versionize/versionize).
+Conventional Commits are enforced with a pre-commit git hook (using [husky](https://alirezanet.github.io/Husky.Net/guide/)).
+
+## Contributing
+
+1. Fork the repo.
+2. Create a topic branch git checkout -b my_branch
+3. Commit your changes git commit -am "chore: boom"
+4. Write a test that verifies your changes
+5. Push to your branch git push origin my_branch
+6. Send a [pull request](https://github.com/honeybadger-io/honeybadger-dotnet/pulls)
+7. Make sure that CI checks are passing
+
+## Releasing
+
+All packages are published on nuget.org with a [Github Actions Worfklow](./.github/workflows/release.yml).
+The workflow does the following:
+- `dotnet versionize` - bump versions and generate changelog
+- `dotnet pack`
+- `dotnet package push`
+
+_Note: only users with write permissions can trigger this workflow (i.e. Collaborators)._
+
+## Known bugs
+
+- [ ] Always shows "Honeybadger.HoneybadgerClient" when reporting a notice with a message
+
+## TODO
+
+- [ ] Publish README with basic info to setup core nuget
+- [ ] Publish Honeybadger.DotNetCore with README
+- [ ] Publish Honeybadger.Extensions.Logging with REDME
+- [ ] Deploy under Honeybadger org
+- [ ] Implement Error Grouping (custom fingerprint)
+- [ ] Implement Error Tags
+- [ ] Allow excluding errors (either with a BeforeNotify method or exception classes config)
+- [ ] Implement Filter Keys (exclude sensitive keys)
+- [ ] Implement Checkins
+- [ ] Implement Collect User Feedback
+- [ ] Create guide for Deployment Tracking
+- [ ] Create integration guide in honeybadger-docs project
+
+## License
+
+This Honeybadger repository and published packages are MIT licensed. See the [MIT-LICENSE](./MIT_LICENSE) file in this repository for details.

@@ -33,7 +33,7 @@ public class HoneybadgerClient : IHoneybadgerClient
     public void Notify(string message, Dictionary<string, object> context)
     {
         var notice = NoticeFactory.Make(this, message, GetContext(context));
-        Send(notice);
+        Notify(notice);
     }
 
     public void Notify(Exception error)
@@ -44,7 +44,39 @@ public class HoneybadgerClient : IHoneybadgerClient
     public void Notify(Exception error, Dictionary<string, object> context)
     {
         var notice = NoticeFactory.Make(this, error, GetContext(context));
-        Send(notice);
+        Notify(notice);
+    }
+
+    private void Notify(Notice notice)
+    {
+        Send(notice).Wait();
+    }
+
+    public Task NotifyAsync(string message)
+    {
+        return NotifyAsync(message, new Dictionary<string, object>());
+    }
+
+    public Task NotifyAsync(string message, Dictionary<string, object> context)
+    {
+        var notice = NoticeFactory.Make(this, message, GetContext(context));
+        return NotifyAsync(notice);
+    }
+
+    public Task NotifyAsync(Exception error)
+    {
+        return NotifyAsync(error, new Dictionary<string, object>());
+    }
+
+    public Task NotifyAsync(Exception error, Dictionary<string, object> context)
+    {
+        var notice = NoticeFactory.Make(this, error, GetContext(context));
+        return NotifyAsync(notice);
+    }
+
+    private Task NotifyAsync(Notice notice)
+    {
+        return Send(notice);
     }
 
     public void AddContext(Dictionary<string, object> context)
@@ -121,7 +153,7 @@ public class HoneybadgerClient : IHoneybadgerClient
         return Options.BreadcrumbsEnabled ? _breadcrumbs.Value?.ToArray() : null;
     }
 
-    private async void Send(Notice notice)
+    private async Task Send(Notice notice)
     {
         Console.WriteLine("Ready to send report to Honeybadger");
         var request = new HttpRequestMessage(HttpMethod.Post, "v1/notices");
@@ -145,7 +177,7 @@ public class HoneybadgerClient : IHoneybadgerClient
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine(ex.Message);
+            await Console.Error.WriteLineAsync(ex.Message);
         }
     }
 

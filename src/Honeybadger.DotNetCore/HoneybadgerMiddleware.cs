@@ -15,17 +15,9 @@ public class HoneybadgerMiddleware
 
     public async Task Invoke(HttpContext context, IHoneybadgerClient client)
     {
+        // needed for HoneybadgerStartupFilter.cs
         context.Items[HttpContextItemsKey] = client;
         
-        // capture the request information now as the http context
-        // may be changed by other error handlers after an exception
-        // has occurred
-        // var bugsnagRequestInformation = context.ToRequest();
-
-        // client.BeforeNotify(report => {
-        //     report.Event.Request = bugsnagRequestInformation;
-        // });
-
         if (!client.Options.ReportData)
         {
             await _next(context);
@@ -38,7 +30,7 @@ public class HoneybadgerMiddleware
         }
         catch (Exception exception)
         {
-            client.Notify(exception);
+            await client.NotifyAsync(exception);
             throw;
         }
     }

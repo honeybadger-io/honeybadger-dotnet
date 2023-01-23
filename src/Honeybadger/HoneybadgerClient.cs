@@ -101,6 +101,7 @@ public class HoneybadgerClient : IHoneybadgerClient
     {
         if (_breadcrumbs.Value == null || !Options.ReportData || !Options.BreadcrumbsEnabled)
         {
+            Console.WriteLine($"not adding breadcrumb: {message}");
             return;
         }
 

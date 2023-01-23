@@ -62,7 +62,7 @@ public class NoticeFactoryTest
     public void CreatesNotice_WithMaxBreadcrumbs()
     {
         var options = new HoneybadgerOptions {ReportData = true};
-        var client = HoneybadgerSdk.Init(options);
+        var client = new HoneybadgerClient(options, new HttpClient());
         for (var i = 0; i < options.MaxBreadcrumbs + 2; i++)
         {
             client.AddBreadcrumb($"a breadcrumb {i}", "a category");
@@ -78,7 +78,7 @@ public class NoticeFactoryTest
         Assert.True(notice.Breadcrumbs.Enabled);
         if (!notice.Breadcrumbs.Trail.Any())
         {
-            Console.WriteLine("CreatesNotice_WithMaxBreadcrumbs: no breadcrumbs");
+            Console.WriteLine("CreatesNotice_WithBreadcrumbs: no breadcrumbs");
         }
         Assert.NotEmpty(notice.Breadcrumbs.Trail);
         Assert.Equal(options.MaxBreadcrumbs, notice.Breadcrumbs.Trail.Length);

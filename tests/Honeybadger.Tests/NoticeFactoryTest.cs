@@ -64,30 +64,32 @@ public class NoticeFactoryTest
         AssertNotifier(notice);
     }
 
-    // [Fact]
-    // public void CreatesNotice_WithMaxBreadcrumbs()
-    // {
-    //     var options = new HoneybadgerOptions {ReportData = true};
-    //     var client = HoneybadgerSdk.Init(options);
-    //     for (var i = 0; i < options.MaxBreadcrumbs + 2; i++)
-    //     {
-    //         client.AddBreadcrumb($"a breadcrumb {i}", "a category");
-    //     }
-    //
-    //     var exception = new NamedException("exception");
-    //     var notice = NoticeFactory.Make(client, exception);
-    //
-    //     Assert.NotNull(notice);
-    //     Assert.NotNull(notice.Error);
-    //     Assert.Equal("exception", notice.Error?.Message);
-    //     Assert.Equal("Honeybadger.Tests.NamedException", notice.Error?.Class);
-    //     Assert.True(notice.Breadcrumbs.Enabled);
-    //     Assert.NotEmpty(notice.Breadcrumbs.Trail);
-    //     Assert.Equal(options.MaxBreadcrumbs, notice.Breadcrumbs.Trail.Length);
-    //     var lastBreadcrumb = notice.Breadcrumbs.Trail.Last();
-    //     Assert.Equal($"a breadcrumb {options.MaxBreadcrumbs + 1}", lastBreadcrumb.Message);
-    //     AssertNotifier(notice);
-    // }
+    [Fact]
+    public void CreatesNotice_WithMaxBreadcrumbs()
+    {
+        var options = new HoneybadgerOptions {ReportData = true};
+        var client = HoneybadgerSdk.Init(options);
+        for (var i = 0; i < options.MaxBreadcrumbs + 2; i++)
+        {
+            client.AddBreadcrumb($"a breadcrumb {i}", "a category");
+        }
+    
+        var exception = new NamedException("exception");
+        var notice = NoticeFactory.Make(client, exception);
+        
+        _testOutputHelper.WriteLine(JsonSerializer.Serialize(notice));
+    
+        Assert.NotNull(notice);
+        Assert.NotNull(notice.Error);
+        Assert.Equal("exception", notice.Error?.Message);
+        Assert.Equal("Honeybadger.Tests.NamedException", notice.Error?.Class);
+        Assert.True(notice.Breadcrumbs.Enabled);
+        Assert.NotEmpty(notice.Breadcrumbs.Trail);
+        Assert.Equal(options.MaxBreadcrumbs, notice.Breadcrumbs.Trail.Length);
+        var lastBreadcrumb = notice.Breadcrumbs.Trail.Last();
+        Assert.Equal($"a breadcrumb {options.MaxBreadcrumbs + 1}", lastBreadcrumb.Message);
+        AssertNotifier(notice);
+    }
 
     [Fact]
     public void CreatesNotice_WithContext()

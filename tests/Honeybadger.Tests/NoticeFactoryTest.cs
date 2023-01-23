@@ -46,8 +46,6 @@ public class NoticeFactoryTest
         var exception = new NamedException("exception");
         var notice = NoticeFactory.Make(client, exception);
         
-        Console.WriteLine(JsonSerializer.Serialize(notice));
-    
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);
         Assert.Equal("exception", notice.Error?.Message);
@@ -70,8 +68,6 @@ public class NoticeFactoryTest
         var exception = new NamedException("exception");
         var notice = NoticeFactory.Make(client, exception);
         
-        Console.WriteLine(JsonSerializer.Serialize(notice));
-    
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);
         Assert.Equal("exception", notice.Error?.Message);

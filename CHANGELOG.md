@@ -1,5 +1,12 @@
 
 
+<a name="0.2.0"></a>
+## [0.2.0](https://www.github.com/honeybadger-io/honeybadger-dotnet/releases/tag/v0.2.0) (2023-1-23)
+
+### Features
+
+* NotifyAsync and updated readme ([216aad1](https://www.github.com/honeybadger-io/honeybadger-dotnet/commit/216aad140c6683d5aae68e696c2d4196b674f57b))
+
 <a name="0.1.0"></a>
 ## [0.1.0](https://www.github.com/honeybadger-io/honeybadger-dotnet/releases/tag/v0.1.0) (2022-5-4)
 

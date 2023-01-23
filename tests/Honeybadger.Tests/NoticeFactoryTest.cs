@@ -11,13 +11,6 @@ namespace Honeybadger.Tests;
 
 public class NoticeFactoryTest
 {
-    private readonly ITestOutputHelper _testOutputHelper;
-
-    public NoticeFactoryTest(ITestOutputHelper testOutputHelper)
-    {
-        _testOutputHelper = testOutputHelper;
-    }
-
     [Fact]
     public void CreatesNotice_FromString()
     {
@@ -53,7 +46,7 @@ public class NoticeFactoryTest
         var exception = new NamedException("exception");
         var notice = NoticeFactory.Make(client, exception);
         
-        _testOutputHelper.WriteLine(JsonSerializer.Serialize(notice));
+        Console.WriteLine(JsonSerializer.Serialize(notice));
     
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);
@@ -77,7 +70,7 @@ public class NoticeFactoryTest
         var exception = new NamedException("exception");
         var notice = NoticeFactory.Make(client, exception);
         
-        _testOutputHelper.WriteLine(JsonSerializer.Serialize(notice));
+        Console.WriteLine(JsonSerializer.Serialize(notice));
     
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);

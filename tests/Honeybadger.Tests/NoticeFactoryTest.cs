@@ -1,13 +1,23 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using Honeybadger.NoticeHelpers;
 using Honeybadger.Schema;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Honeybadger.Tests;
 
 public class NoticeFactoryTest
 {
+    private readonly ITestOutputHelper _testOutputHelper;
+
+    public NoticeFactoryTest(ITestOutputHelper testOutputHelper)
+    {
+        _testOutputHelper = testOutputHelper;
+    }
+
     [Fact]
     public void CreatesNotice_FromString()
     {
@@ -35,22 +45,24 @@ public class NoticeFactoryTest
         AssertNotifier(notice);
     }
 
-    // [Fact]
-    // public void CreatesNotice_WithBreadcrumbs()
-    // {
-    //     var client = HoneybadgerSdk.Init(new HoneybadgerOptions {ReportData = true});
-    //     client.AddBreadcrumb("a breadcrumb", "a category");
-    //     var exception = new NamedException("exception");
-    //     var notice = NoticeFactory.Make(client, exception);
-    //
-    //     Assert.NotNull(notice);
-    //     Assert.NotNull(notice.Error);
-    //     Assert.Equal("exception", notice.Error?.Message);
-    //     Assert.Equal("Honeybadger.Tests.NamedException", notice.Error?.Class);
-    //     Assert.True(notice.Breadcrumbs.Enabled);
-    //     Assert.NotEmpty(notice.Breadcrumbs.Trail);
-    //     AssertNotifier(notice);
-    // }
+    [Fact]
+    public void CreatesNotice_WithBreadcrumbs()
+    {
+        var client = HoneybadgerSdk.Init(new HoneybadgerOptions {ReportData = true});
+        client.AddBreadcrumb("a breadcrumb", "a category");
+        var exception = new NamedException("exception");
+        var notice = NoticeFactory.Make(client, exception);
+        
+        _testOutputHelper.WriteLine(JsonSerializer.Serialize(notice));
+    
+        Assert.NotNull(notice);
+        Assert.NotNull(notice.Error);
+        Assert.Equal("exception", notice.Error?.Message);
+        Assert.Equal("Honeybadger.Tests.NamedException", notice.Error?.Class);
+        Assert.True(notice.Breadcrumbs.Enabled);
+        Assert.NotEmpty(notice.Breadcrumbs.Trail);
+        AssertNotifier(notice);
+    }
 
     // [Fact]
     // public void CreatesNotice_WithMaxBreadcrumbs()

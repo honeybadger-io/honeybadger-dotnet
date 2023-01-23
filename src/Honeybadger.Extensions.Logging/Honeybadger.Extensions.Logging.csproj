@@ -5,13 +5,20 @@
         <LangVersion>10.0</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Description>Honeybadger client for .Net</Description>
+        <RepositoryUrl>https://github.com/honeybadger-io/honeybadger-dotnet</RepositoryUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseUrl>https://github.com/honeybadger-io/honeybadger-dotnet/MIT_LICENSE</PackageLicenseUrl>
+        <PackageTags>honeybadger, exception, error, monitoring</PackageTags>
+        <Version>0.2.0</Version>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Honeybadger\Honeybadger.csproj" />
+        <None Include="../../README.md" Pack="true" PackagePath="/" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Honeybadger" Version="0.2.0" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="6.0.0" />
       <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />

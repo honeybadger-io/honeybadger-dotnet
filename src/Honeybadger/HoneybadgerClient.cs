@@ -101,6 +101,7 @@ public class HoneybadgerClient : IHoneybadgerClient
     {
         if (_breadcrumbs.Value == null || !Options.ReportData || !Options.BreadcrumbsEnabled)
         {
+            // fixme: for debugging purposes (see #3 - CI is randomly failing) 
             Console.WriteLine($"not adding breadcrumb: {message}");
             return;
         }

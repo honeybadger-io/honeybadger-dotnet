@@ -120,7 +120,7 @@ _Note: only users with write permissions can trigger this workflow (i.e. Collabo
 
 - [ ] Publish README with basic info to setup core nuget
 - [ ] Publish Honeybadger.DotNetCore with README
-- [ ] Publish Honeybadger.Extensions.Logging with REDME
+- [ ] Publish Honeybadger.Extensions.Logging with README
 - [ ] Deploy under Honeybadger org
 - [ ] Implement Error Grouping (custom fingerprint)
 - [ ] Implement Error Tags

@@ -2,11 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text.Json;
 using Honeybadger.NoticeHelpers;
 using Honeybadger.Schema;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Honeybadger.Tests;
 
@@ -52,6 +50,10 @@ public class NoticeFactoryTest
         Assert.Equal("exception", notice.Error?.Message);
         Assert.Equal("Honeybadger.Tests.NamedException", notice.Error?.Class);
         Assert.True(notice.Breadcrumbs.Enabled);
+        if (!notice.Breadcrumbs.Trail.Any())
+        {
+            Console.WriteLine("CreatesNotice_WithBreadcrumbs: no breadcrumbs");
+        }
         Assert.NotEmpty(notice.Breadcrumbs.Trail);
         AssertNotifier(notice);
     }
@@ -74,6 +76,10 @@ public class NoticeFactoryTest
         Assert.Equal("exception", notice.Error?.Message);
         Assert.Equal("Honeybadger.Tests.NamedException", notice.Error?.Class);
         Assert.True(notice.Breadcrumbs.Enabled);
+        if (!notice.Breadcrumbs.Trail.Any())
+        {
+            Console.WriteLine("CreatesNotice_WithMaxBreadcrumbs: no breadcrumbs");
+        }
         Assert.NotEmpty(notice.Breadcrumbs.Trail);
         Assert.Equal(options.MaxBreadcrumbs, notice.Breadcrumbs.Trail.Length);
         var lastBreadcrumb = notice.Breadcrumbs.Trail.Last();

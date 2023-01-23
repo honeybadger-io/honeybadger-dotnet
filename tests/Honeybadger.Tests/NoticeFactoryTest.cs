@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text.Json;
 using Honeybadger.NoticeHelpers;
 using Honeybadger.Schema;
@@ -41,7 +42,7 @@ public class NoticeFactoryTest
     [Fact]
     public void CreatesNotice_WithBreadcrumbs()
     {
-        var client = HoneybadgerSdk.Init(new HoneybadgerOptions {ReportData = true});
+        var client = new HoneybadgerClient(new HoneybadgerOptions {ReportData = true}, new HttpClient());
         client.AddBreadcrumb("a breadcrumb", "a category");
         var exception = new NamedException("exception");
         var notice = NoticeFactory.Make(client, exception);

@@ -32,8 +32,14 @@ jobs:
       - name: Pack Nugets
         run: dotnet pack --configuration Release
         
-      - name: Publish Nugets
+      - name: Publish Honeybadger Nuget
         run: dotnet nuget push src/Honeybadger/bin/Release/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{ secrets.NUGET_API_KEY }}
+
+      - name: Publish Honeybadger.DotNetCore
+        run: dotnet nuget push src/Honeybadger.DotNetCore/bin/Release/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{ secrets.NUGET_API_KEY }}
+        
+      - name: Publish Honeybadger.Extensions.Logging
+        run: dotnet nuget push src/Honeybadger.Extensions.Logging/bin/Release/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{ secrets.NUGET_API_KEY }}
           
       - name: Push tags on git
         run: git push --follow-tags origin

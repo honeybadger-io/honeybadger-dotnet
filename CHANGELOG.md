@@ -1,5 +1,12 @@
 
 
+<a name="0.3.0"></a>
+## [0.3.0](https://www.github.com/honeybadger-io/honeybadger-dotnet/releases/tag/v0.3.0) (2023-1-24)
+
+### Features
+
+* publish all 3 nugets ([dd793cf](https://www.github.com/honeybadger-io/honeybadger-dotnet/commit/dd793cfeccec734328d0682b86d3926ccd185f91))
+
 <a name="0.2.0"></a>
 ## [0.2.0](https://www.github.com/honeybadger-io/honeybadger-dotnet/releases/tag/v0.2.0) (2023-1-23)
 

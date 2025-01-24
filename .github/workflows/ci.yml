@@ -8,20 +8,22 @@ jobs:
     name: Build & Test
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    strategy:
-      matrix:
-        dotnet-version: [ '8.0.1', '9.0.0' ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         
-      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+      - name: Setup .NET Core SDK 8.0
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: ${{ matrix.dotnet-version }}
+          dotnet-version: 8.0.x
+          
+      - name: Setup .NET Core SDK 9.0
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0.x
       
       - name: Install dependencies
-        run: dotnet restore -p:TargetFramework=net${{ matrix.dotnet-version }}
+        run: dotnet restore
 
       - name: Build
         run: dotnet build --configuration Release --no-restore

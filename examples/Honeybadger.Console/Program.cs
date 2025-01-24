@@ -1,12 +1,19 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using Honeybadger;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
-using Honeybadger;
+var builder = new ConfigurationBuilder();
+var baseDir = Directory.GetCurrentDirectory();
+var configuration = builder
+    .SetBasePath(baseDir)
+    .AddJsonFile("appsettings.json", false, false)
+    .Build();
 
-Console.WriteLine("Hello, World!");
+var options = new HoneybadgerOptions();
+configuration
+    .GetSection("Honeybadger")
+    .Bind(options);
 
-var client = HoneybadgerSdk.Init(new HoneybadgerOptions("YOUR_HONEYBADGER_API_KEY")
-{
-    AppEnvironment = "development"
-});
-
+var client = new HoneybadgerClient(Options.Create(options));
 client.Notify("hello from .Net !");
+Console.WriteLine("Done. Check your Honeybadger dashboard for the error.");

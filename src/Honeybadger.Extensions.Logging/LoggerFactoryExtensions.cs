@@ -1,3 +1,4 @@
+using Honeybadger;
 using Honeybadger.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -14,9 +15,11 @@ public static class LoggerFactoryExtensions
     {
         builder.AddConfiguration();
 
+        builder.Services.AddSingleton<IHoneybadgerClient, HoneybadgerClient>();
+        
         builder.Services.TryAddEnumerable(
             ServiceDescriptor.Singleton<ILoggerProvider, HoneybadgerLoggerProvider>());
-
+        
         LoggerProviderOptions.RegisterProviderOptions
             <HoneybadgerLoggingOptions, HoneybadgerLoggerProvider>(builder.Services);
 

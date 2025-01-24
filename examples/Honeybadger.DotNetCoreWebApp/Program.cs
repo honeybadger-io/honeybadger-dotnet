@@ -3,10 +3,7 @@ using Honeybadger.DotNetCore;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddHoneybadger(new HoneybadgerOptions("YOUR_HONEYBADGER_API_KEY")
-{
-    AppEnvironment = "development"
-});
+builder.AddHoneybadger();
 
 var app = builder.Build();
 app.MapGet("/", ([FromServices] IHoneybadgerClient client) =>

@@ -4,12 +4,7 @@ This is the .Net Honeybadger Notifier.
 
 ## Supported .Net versions:
 
-| Family         | Version  |
-|----------------|----------|
-| .Net           | 5.0, 6.0 |
-| .Net Standard  | 2.0, 2.1 |
-| .Net Core      | 3.0, 3.1 |
-| .Net Framework | 4.6.1    |
+All modern .Net Core applications are supported, up to .Net 9.0.
 
 ## Getting Started
 
@@ -22,7 +17,7 @@ dotnet add package Honeybadger.DotNetCore
 2. Register the _Honeybadger Middleware_:
 ```c#
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddHoneybadger();
+builder.AddHoneybadger();
 ```
 
 You can get access to the _Honeybadger Client_ using _DI_:
@@ -47,43 +42,41 @@ See example project in `examples/Honeybadger.DotNetCoreWebApp`.
 ### As a custom logging provider 
 
 1. Install Honeybadger.Extensions.Logging from Nuget
-```
-dotnet add package Honeybadger.Extensions.Logging
-```
+   ```
+   dotnet add package Honeybadger.Extensions.Logging
+   ```
 2. Register the custom logging provider:
-```c#
-var builder = WebApplication.CreateBuilder(args);
-builder.Logging.AddHoneybadger();
-```
+   ```c#
+   var builder = WebApplication.CreateBuilder(args);
+   builder.Logging.AddHoneybadger();
+   ```
 3. Errors from the `logger` will be reported to Honeybadger:
-```c#
-app.MapGet("/notify", ([FromServices] ILogger logger) =>
-{
-    logger.LogError("hello from Honeybadger.Logger!");
-    
-    return "Log reported to Honeybadger. Check your dashboard!";
-});
-```
+   ```c#
+   app.MapGet("/notify", ([FromServices] ILogger logger) =>
+   {
+       logger.LogError("hello from Honeybadger.Logger!");
+       
+       return "Log reported to Honeybadger. Check your dashboard!";
+   });
+   ```
 
 See example project in `examples/Honeybadger.DotNetCoreWebApp.Logger`.
 
 ### Using the SDK manually
 
 1. Install the [Honeybadger Nuget](https://www.nuget.org/packages/Honeybadger).
-```
-dotnet add package Honeybadger
-```
+   ```
+   dotnet add package Honeybadger
+   ```
 2. Initialize the _Honeybadger Client_:
-```c#
-var client = HoneybadgerSdk.Init(new HoneybadgerOptions("apiKey")
-{
-    AppEnvironment = "development"
-});
-```
+   ```c#
+   var options = new HoneybadgerOptions("apiKey");
+   var client = new HoneybadgerClient(Options.Create(options));
+   ```
 3. Call `notify` to report to Honeybadger:
-```c#
-client.Notify("hello from .Net !");
-```
+   ```c#
+   client.Notify("hello from .Net !");
+   ```
 
 See example project in `examples/Honeybadger.Console`.
 

@@ -3,7 +3,7 @@ namespace Honeybadger;
 public static class Constants
 {
     public const string DateTimeFormat = "yyyy-MM-ddTHH:mm:ssZ";
-    public const string GithubUrl = "https://github.com/subzero10/honeybadger-dotnet";
+    public const string GithubUrl = "https://github.com/honeybadger-io/honeybadger-dotnet";
     public const string DefaultApiEndpoint = "https://api.honeybadger.io";
     public const string DefaultHostname = "hostname";
 
@@ -12,5 +12,5 @@ public static class Constants
         "password", "password_confirmation", "credit_card"
     };
 
-    public static readonly string[] DefaultDevelopmentEnvironments = {"test", "development"};
+    public static readonly string[] DefaultDevelopmentEnvironments = {"test", "development", "dev"};
 }

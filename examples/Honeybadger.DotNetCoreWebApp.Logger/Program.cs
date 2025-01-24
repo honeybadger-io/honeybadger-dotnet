@@ -6,7 +6,7 @@ builder.Logging.AddHoneybadger();
 var app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");
-app.MapGet("/notify", ([FromServices] ILogger logger) =>
+app.MapGet("/notify", ([FromServices] ILogger<Program> logger) =>
 {
     logger.LogError("hello from Honeybadger.Logger!");
     
@@ -14,3 +14,5 @@ app.MapGet("/notify", ([FromServices] ILogger logger) =>
 });
 
 app.Run();
+
+public partial class Program {}

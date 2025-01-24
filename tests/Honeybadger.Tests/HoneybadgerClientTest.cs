@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Honeybadger.Schema;
+using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
 using Xunit;
@@ -16,11 +17,13 @@ public class HoneybadgerClientTest
     [Fact]
     public void InitializesClient()
     {
-        var client = HoneybadgerSdk.Init(new HoneybadgerOptions("test")
+        var options = Options.Create(new HoneybadgerOptions("test")
         {
-             ReportData = false
+            ReportData = false
         });
-        Assert.True(client is HoneybadgerClient);
+        
+        var client = new HoneybadgerClient(options);
+        Assert.NotNull(client);
     }
     
     [Fact]
@@ -56,7 +59,12 @@ public class HoneybadgerClientTest
                 StatusCode = HttpStatusCode.OK,
                 Content = new StringContent("")
             });
-        var client = new HoneybadgerClient(new HoneybadgerOptions("test"), new HttpClient(mockHttpHandler.Object));
+        
+        var options = Options.Create(new HoneybadgerOptions("test")
+        {
+            HttpClient = new HttpClient(mockHttpHandler.Object)
+        });
+        var client = new HoneybadgerClient(options);
         client.AddBreadcrumb(breadcrumbMessage, breadcrumbCategory, breadcrumbMetadata);
         client.Notify(noticeMessage);
     }
@@ -85,7 +93,12 @@ public class HoneybadgerClientTest
                 StatusCode = HttpStatusCode.OK,
                 Content = new StringContent("")
             });
-        var client = new HoneybadgerClient(new HoneybadgerOptions("test"), new HttpClient(mockHttpHandler.Object));
+        
+        var options = Options.Create(new HoneybadgerOptions("test")
+        {
+            HttpClient = new HttpClient(mockHttpHandler.Object)
+        });
+        var client = new HoneybadgerClient(options);
         client.AddContext(noticeContext);
         client.Notify(noticeMessage);
     }

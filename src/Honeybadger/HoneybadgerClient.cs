@@ -3,26 +3,25 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Honeybadger.NoticeHelpers;
 using Honeybadger.Schema;
+using Microsoft.Extensions.Options;
 
 namespace Honeybadger;
 
-public class HoneybadgerClient : IHoneybadgerClient
+public class HoneybadgerClient : IHoneybadgerClient, IDisposable
 {
-    public HoneybadgerOptions Options { get; }
-
-    private readonly HttpClient _httpClient;
+    public HoneybadgerOptions Options { get; private set; } = null!;
+    
+    private HttpClient? _httpClient;
 
     private readonly ThreadLocal<Dictionary<string, object>> _context;
 
     private readonly ThreadLocal<List<Trail>> _breadcrumbs;
 
-    public HoneybadgerClient(HoneybadgerOptions options, HttpClient httpClient)
+    public HoneybadgerClient(IOptions<HoneybadgerOptions> options)
     {
-        _httpClient = httpClient;
         _context = new ThreadLocal<Dictionary<string, object>>(() => new Dictionary<string, object>());
         _breadcrumbs = new ThreadLocal<List<Trail>>(() => new List<Trail>());
-        Options = options;
-        SetupHttpClient();
+        Configure(options.Value);
     }
 
     public void Notify(string message)
@@ -102,7 +101,7 @@ public class HoneybadgerClient : IHoneybadgerClient
         if (_breadcrumbs.Value == null || !Options.ReportData || !Options.BreadcrumbsEnabled)
         {
             // fixme: for debugging purposes (see #3 - CI is randomly failing) 
-            Console.WriteLine($"not adding breadcrumb: {message}");
+            // Console.WriteLine($"not adding breadcrumb: {message}");
             return;
         }
 
@@ -128,6 +127,18 @@ public class HoneybadgerClient : IHoneybadgerClient
     public void ResetBreadcrumbs()
     {
         _breadcrumbs.Value?.Clear();
+    }
+
+    public void Configure(HoneybadgerOptions options)
+    {
+        Options = options;
+        GetClient(true);
+    }
+    
+    public void Dispose()
+    {
+        _context.Dispose();
+        _breadcrumbs.Dispose();
     }
 
     private Dictionary<string, object> GetContext(Dictionary<string, object>? context = null)
@@ -157,7 +168,7 @@ public class HoneybadgerClient : IHoneybadgerClient
 
     private async Task Send(Notice notice)
     {
-        Console.WriteLine("Ready to send report to Honeybadger");
+        // Console.WriteLine("Ready to send report to Honeybadger");
         var request = new HttpRequestMessage(HttpMethod.Post, "v1/notices");
         var json = JsonSerializer.Serialize(notice, new JsonSerializerOptions
         {
@@ -166,15 +177,15 @@ public class HoneybadgerClient : IHoneybadgerClient
         request.Content = new StringContent(json, Encoding.UTF8, "application/json");
         try
         {
-            var result = await _httpClient.SendAsync(request);
+            var result = await GetClient().SendAsync(request);
             if (!result.IsSuccessStatusCode)
             {
-                var content = await result.Content.ReadAsStringAsync();
-                Console.WriteLine("Could not send report to Honeybadger | HTTP[{0}]: {1}", result.StatusCode, content);
+                // var content = await result.Content.ReadAsStringAsync();
+                // Console.WriteLine("Could not send report to Honeybadger | HTTP[{0}]: {1}", result.StatusCode, content);
             }
             else
             {
-                Console.WriteLine("Report sent to Honeybadger");
+                // Console.WriteLine("Report sent to Honeybadger");
             }
         }
         catch (Exception ex)
@@ -183,9 +194,25 @@ public class HoneybadgerClient : IHoneybadgerClient
         }
     }
 
-    private void SetupHttpClient()
+    private HttpClient GetClient(bool forceNew = false)
     {
-        _httpClient.BaseAddress = Options.Endpoint;
-        _httpClient.DefaultRequestHeaders.Add("X-API-Key", Options.ApiKey);
+        if (_httpClient is not null && !forceNew)
+        {
+            return _httpClient;
+        }
+        
+        if (Options.HttpClient is not null)
+        {
+            _httpClient = Options.HttpClient;
+        }
+        else
+        {
+            var client = new HttpClient();
+            client.BaseAddress = Options.Endpoint;
+            client.DefaultRequestHeaders.Add("X-API-Key", Options.ApiKey);
+            _httpClient = client;
+        }
+        
+        return _httpClient;
     }
 }

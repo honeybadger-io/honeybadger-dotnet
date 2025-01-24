@@ -5,57 +5,63 @@ public class HoneybadgerOptions
     /// <summary>
     /// Required. The project's private API key.
     /// </summary>
-    public string ApiKey { get; }
+    public string ApiKey { get; set; }
 
     /// <summary>
     /// The path to the project's executable code.
     /// </summary>
-    public string? ProjectRoot { get; init; } = null;
+    public string? ProjectRoot { get; set; } = null;
 
     /// <summary>
     /// The environment name of the application.
     /// </summary>
-    public string? AppEnvironment { get; init; } = null;
+    public string? AppEnvironment { get; set; } = null;
 
     /// <summary>
     /// The hostname of the system.
     /// </summary>
-    public string HostName { get; init; }
+    public string HostName { get; set; }
 
     /// <summary>
     /// The base API Endpoint
     /// </summary>
-    public Uri Endpoint { get; init; } = new(Constants.DefaultApiEndpoint);
+    public Uri Endpoint { get; set; } = new(Constants.DefaultApiEndpoint);
 
     /// <summary>
     /// A list of keys whose values are replaced with "[FILTERED]" in sensitive data objects (like request parameters).
     /// </summary>
-    public string[] FilterKeys { get; init; } = Constants.DefaultFilterKeys;
+    public string[] FilterKeys { get; set; } = Constants.DefaultFilterKeys;
 
     /// <summary>
     /// A list of development environments. When environment is in the list, log errors locally instead of reporting.
     /// </summary>
-    public string[] DevelopmentEnvironments { get; init; } = Constants.DefaultDevelopmentEnvironments;
+    public string[] DevelopmentEnvironments { get; set; } = Constants.DefaultDevelopmentEnvironments;
 
     /// <summary>
-    /// Explicit override for development environments check; when true, always report errors.
+    /// Explicit override for development environments check (<see cref="DevelopmentEnvironments"/>).
+    /// When true, always report errors.
     /// </summary>
-    public bool ReportData { get; init; }
+    public bool ReportData { get; set; }
 
     /// <summary>
     /// The revision of the current deploy
     /// </summary>
-    public string? Revision { get; init; }
+    public string? Revision { get; set; }
 
     /// <summary>
     /// Allow/disallow breadcrumbs.
     /// </summary>
-    public bool BreadcrumbsEnabled { get; init; } = true;
+    public bool BreadcrumbsEnabled { get; set; } = true;
 
     /// <summary>
     /// Maximum number of breadcrumbs.
     /// </summary>
-    public int MaxBreadcrumbs { get; init; } = 40;
+    public int MaxBreadcrumbs { get; set; } = 40;
+
+    /// <summary>
+    /// Mostly here to be utilized by unit tests.
+    /// </summary>
+    public HttpClient? HttpClient { get; set; }
 
     public HoneybadgerOptions()
     {
@@ -82,7 +88,9 @@ public class HoneybadgerOptions
             DevelopmentEnvironments = devEnvironments;
         }
 
-        ReportData = GetBoolFromEnv("HONEYBADGER_REPORT_DATA") ?? !DevelopmentEnvironments.Contains(AppEnvironment);
+        ReportData = GetBoolFromEnv("HONEYBADGER_REPORT_DATA") ?? 
+                     !DevelopmentEnvironments.Contains(AppEnvironment, StringComparer.InvariantCultureIgnoreCase);
+        
         Revision = Environment.GetEnvironmentVariable("HONEYBADGER_REVISION");
 
         var breadcrumbsEnabled = GetBoolFromEnv("HONEYBADGER_BREADCRUMBS_ENABLED");

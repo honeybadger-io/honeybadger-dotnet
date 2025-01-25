@@ -47,7 +47,8 @@ public class HoneybadgerStartupFilter : IStartupFilter
 
             if (clientObject is IHoneybadgerClient client)
             {
-                client.Notify(exception);
+                // no need to await, we're in a fire-and-forget context
+                client.NotifyAsync(exception).ConfigureAwait(false);
             }
         }
     }

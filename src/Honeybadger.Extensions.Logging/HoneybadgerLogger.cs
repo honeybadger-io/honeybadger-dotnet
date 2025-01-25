@@ -50,14 +50,13 @@ public class HoneybadgerLogger : ILogger
 
     public bool IsEnabled(LogLevel logLevel)
     {
-        return _getOptions().ReportData;
+        return _getOptions().ShouldReport();
     }
 
     public IDisposable BeginScope<TState>(TState state) where TState : notnull => null!;
 
     private bool ShouldReport(LogLevel logLevel)
     {
-        // todo: need to check more options here
         return _getOptions().MinimumNoticeLevel <= logLevel;
     }
 

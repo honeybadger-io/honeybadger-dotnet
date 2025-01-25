@@ -39,7 +39,7 @@ public class NoticeFactoryTest
     [Fact]
     public void CreatesNotice_WithBreadcrumbs()
     {
-        var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions { ReportData = true }));
+        var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions("api_key") { ReportData = true }));
         client.AddBreadcrumb("a breadcrumb", "a category");
         var exception = new NamedException("exception");
         var notice = NoticeFactory.Make(client, exception);
@@ -60,7 +60,7 @@ public class NoticeFactoryTest
     [Fact]
     public void CreatesNotice_WithMaxBreadcrumbs()
     {
-        var options = new HoneybadgerOptions { ReportData = true };
+        var options = new HoneybadgerOptions("api_key") { ReportData = true };
         var client = new HoneybadgerClient(Options.Create(options));
         for (var i = 0; i < options.MaxBreadcrumbs + 2; i++)
         {

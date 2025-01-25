@@ -11,39 +11,20 @@ public static class ServiceCollectionExtensions
     /// Adds Honeybadger client.
     /// Registers a middleware to report unhandled exceptions.
     /// </summary>
-    public static void AddHoneybadger(this IHostApplicationBuilder builder, HoneybadgerOptions options)
+    public static void AddHoneybadger(this IHostApplicationBuilder builder, Action<HoneybadgerOptions>? configure = null)
     {
         //services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        
+        builder.Services.Configure<HoneybadgerOptions>(builder.Configuration.GetSection("Honeybadger"));
 
-        builder.Services.Configure<HoneybadgerOptions>(config =>
+        if (configure is not null)
         {
-            config.ApiKey = options.ApiKey;
-            config.AppEnvironment = options.AppEnvironment;
-            config.BreadcrumbsEnabled = options.BreadcrumbsEnabled;
-            config.DevelopmentEnvironments = options.DevelopmentEnvironments;
-            config.Endpoint = options.Endpoint;
-            config.Revision = options.Revision;
-            config.FilterKeys = options.FilterKeys;
-            config.HostName = options.HostName;
-            config.MaxBreadcrumbs = options.MaxBreadcrumbs;
-            config.ProjectRoot = options.ProjectRoot;
-            config.ReportData = options.ReportData;
-        });
-
+            builder.Services.Configure(configure);    
+        }
+        
         builder.Services
             .AddHttpClient()
             .AddSingleton<IStartupFilter, HoneybadgerStartupFilter>()
             .AddScoped<IHoneybadgerClient, HoneybadgerClient>();
-    }
-    
-    /// <summary>
-    /// Adds Honeybadger client.
-    /// Registers a middleware to report unhandled exceptions.
-    /// </summary>
-    public static void AddHoneybadger(this IHostApplicationBuilder builder)
-    {
-        var options = new HoneybadgerOptions();
-        builder.Configuration.GetSection("Honeybadger").Bind(options);
-        builder.AddHoneybadger(options);
     }
 }

@@ -98,7 +98,7 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
 
     public void AddBreadcrumb(string message, string? category = null, Dictionary<string, object?>? options = null)
     {
-        if (_breadcrumbs.Value == null || !Options.ReportData || !Options.BreadcrumbsEnabled)
+        if (_breadcrumbs.Value == null || !Options.ShouldReport() || !Options.BreadcrumbsEnabled)
         {
             // fixme: for debugging purposes (see #3 - CI is randomly failing) 
             // Console.WriteLine($"not adding breadcrumb: {message}");

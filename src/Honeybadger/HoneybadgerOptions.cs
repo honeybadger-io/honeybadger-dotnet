@@ -88,9 +88,7 @@ public class HoneybadgerOptions
             DevelopmentEnvironments = devEnvironments;
         }
 
-        ReportData = GetBoolFromEnv("HONEYBADGER_REPORT_DATA") ?? 
-                     !DevelopmentEnvironments.Contains(AppEnvironment, StringComparer.InvariantCultureIgnoreCase);
-        
+        ReportData = GetBoolFromEnv("HONEYBADGER_REPORT_DATA") ?? false;
         Revision = Environment.GetEnvironmentVariable("HONEYBADGER_REVISION");
 
         var breadcrumbsEnabled = GetBoolFromEnv("HONEYBADGER_BREADCRUMBS_ENABLED");
@@ -109,6 +107,21 @@ public class HoneybadgerOptions
     public HoneybadgerOptions(string apiKey) : this()
     {
         ApiKey = apiKey;
+    }
+
+    public bool ShouldReport()
+    {
+        if (string.IsNullOrEmpty(ApiKey))
+        {
+            return false;
+        }
+        
+        if (ReportData)
+        {
+            return true;
+        }
+        
+        return !DevelopmentEnvironments.Contains(AppEnvironment, StringComparer.InvariantCultureIgnoreCase);
     }
 
     private static string[]? GetArrayFromEnv(string envName)

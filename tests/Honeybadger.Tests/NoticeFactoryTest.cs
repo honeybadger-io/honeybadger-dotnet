@@ -18,7 +18,7 @@ public class NoticeFactoryTest
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);
         Assert.Equal("test", notice.Error.Message);
-        Assert.Equal("Honeybadger.Tests.NoticeFactoryTest", notice.Error.Class);
+        Assert.Equal("System.RuntimeMethodHandle", notice.Error.Class);
         AssertNotifier(notice);
     }
 

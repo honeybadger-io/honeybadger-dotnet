@@ -13,7 +13,7 @@ app.MapGet("/", ([FromServices] IHoneybadgerClient client) =>
 });
 app.MapGet("/debug", () =>
 {
-    throw new Exception("hello from .Net Core Web App!");
+    throw new Exception("Hello from .Net Core Web App! Improved error handling with Honeybadger.");
 });
 
 app.Run();

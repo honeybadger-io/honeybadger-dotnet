@@ -39,11 +39,11 @@ public class HoneybadgerLogger : ILogger
             if (exception is null)
             {
                 var notice = formatter(state, exception);
-                _client.Notify(notice);
+                _client.NotifyAsync(notice).ConfigureAwait(false);
             }
             else
             {
-                _client.Notify(exception);
+                _client.NotifyAsync(exception).ConfigureAwait(false);
             }
         }
     }

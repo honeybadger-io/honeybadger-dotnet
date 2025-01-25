@@ -8,7 +8,7 @@ var app = builder.Build();
 app.MapGet("/", () => "Hello World!");
 app.MapGet("/notify", ([FromServices] ILogger<Program> logger) =>
 {
-    logger.LogError("hello from Honeybadger.Logger!");
+    logger.LogError("Hello from Honeybadger.Logger! Improved error handling with Honeybadger.");
     
     return "Log reported to Honeybadger. Check your dashboard!";
 });

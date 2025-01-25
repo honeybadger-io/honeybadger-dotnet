@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Security.Cryptography;
 using Honeybadger.Schema;
 
 namespace Honeybadger.NoticeHelpers;
@@ -16,13 +17,20 @@ public static class NoticeFactory
     public static Notice Make(IHoneybadgerClient client, string message, Dictionary<string, object>? context = null)
     {
         var stackTrace = new StackTrace(1, true);
-        var isFirstFrameInternal =
-            stackTrace.GetFrame(0)?.GetMethod()?.DeclaringType?.FullName?.Contains("HoneybadgerClient");
-        if (isFirstFrameInternal.HasValue && isFirstFrameInternal.Value)
+        // do while loop to skip internal frames
+        var frameIndex = 0;
+        var isFrameInternal = true;
+        while (isFrameInternal)
         {
-            stackTrace = new StackTrace(2, true);
+            isFrameInternal = stackTrace.GetFrame(frameIndex)?
+                .GetMethod()?
+                .DeclaringType?.FullName?
+                .Contains("Honeybadger") ?? false;
+            
+            frameIndex++;
         }
-
+        stackTrace = new StackTrace(frameIndex, true);
+        
         return Make(client, message, stackTrace, context: context);
     }
 

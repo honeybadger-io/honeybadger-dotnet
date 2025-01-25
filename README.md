@@ -169,10 +169,6 @@ The workflow does the following:
 
 _Note: only users with write permissions can trigger this workflow (i.e. Collaborators)._
 
-## Known bugs
-
-- [ ] Always shows "Honeybadger.HoneybadgerClient" when reporting a notice with a message
-
 ## TODO
 
 - [ ] Publish README with basic info to setup core nuget

@@ -18,7 +18,7 @@ public class HoneybadgerMiddleware
         // needed for HoneybadgerStartupFilter.cs
         context.Items[HttpContextItemsKey] = client;
         
-        if (client.Options.ShouldReport())
+        if (!client.Options.ShouldReport())
         {
             await _next(context);
             return;

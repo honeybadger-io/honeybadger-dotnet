@@ -4,28 +4,54 @@ This is the .Net Honeybadger Notifier.
 
 ## Supported .Net versions:
 
-| Family         | Version  |
-|----------------|----------|
-| .Net           | 5.0, 6.0 |
-| .Net Standard  | 2.0, 2.1 |
-| .Net Core      | 3.0, 3.1 |
-| .Net Framework | 4.6.1    |
+All modern .Net Core applications are supported, up to .Net 9.0.
 
 ## Getting Started
+
+### Configuration
+
+The Honeybadger Notifier can be configured using the `HoneybadgerOptions` class
+(or `HoneybadgerLoggingOptions` when using as a logger).
+Honeybadger can be configured by passing the options when registering the service,
+or through your `appsettings.json` file.
+
+Honeybadger, by default, will not report errors in development environments.
+You can override the development environments by setting the `DevelopmentEnvironments` property in the options.
+Alternatively, you can set the `ReportData` property to `true` to report errors in all environments.
+
+See below for examples on how to configure Honeybadger for different types of applications.
 
 ### For .Net Core Web App
 
 1. Install Honeybadger.DotNetCore from Nuget
-```
-dotnet add package Honeybadger.DotNetCore
-```
+   ```
+   dotnet add package Honeybadger.DotNetCore
+   ```
 2. Register the _Honeybadger Middleware_:
-```c#
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddHoneybadger();
-```
+   ```c#
+   var builder = WebApplication.CreateBuilder(args);
+   builder.AddHoneybadger(new HoneybadgerOptions("api_key"));
+   ```
+   
+   Or you can configure Honeybadger through your `appsettings.json` file, by adding a `Honeybadger` section:
+   ```json
+   {
+     "Honeybadger": {
+       "ApiKey": "api_key",
+       "AppEnvironment": "Development",
+       "ReportData": true 
+     }
+   }
+   ```
+   And simply call `AddHoneybadger` without any parameters:
+   ```c#
+    var builder = WebApplication.CreateBuilder(args);
+    builder.AddHoneybadger();
+   ```
 
-You can get access to the _Honeybadger Client_ using _DI_:
+#### Usage
+
+You can access the _Honeybadger Client_ using _DI_:
 ```c#
 app.MapGet("/", ([FromServices] IHoneybadgerClient client) =>
 {
@@ -34,7 +60,8 @@ app.MapGet("/", ([FromServices] IHoneybadgerClient client) =>
     return "Hello World!";
 });
 ```
-2. Any unhandled exceptions should be reported to Honeybadger automatically:
+
+Any unhandled exceptions should be reported to Honeybadger automatically:
 ```c#
 app.MapGet("/debug", () =>
 {
@@ -47,43 +74,76 @@ See example project in `examples/Honeybadger.DotNetCoreWebApp`.
 ### As a custom logging provider 
 
 1. Install Honeybadger.Extensions.Logging from Nuget
-```
-dotnet add package Honeybadger.Extensions.Logging
-```
+   ```
+   dotnet add package Honeybadger.Extensions.Logging
+   ```
 2. Register the custom logging provider:
-```c#
-var builder = WebApplication.CreateBuilder(args);
-builder.Logging.AddHoneybadger();
-```
-3. Errors from the `logger` will be reported to Honeybadger:
-```c#
-app.MapGet("/notify", ([FromServices] ILogger logger) =>
-{
-    logger.LogError("hello from Honeybadger.Logger!");
-    
-    return "Log reported to Honeybadger. Check your dashboard!";
-});
-```
+   ```c#
+   var builder = WebApplication.CreateBuilder(args);
+   builder.Logging.AddHoneybadger(new HoneybadgerLoggingOptions 
+   {
+       ApiKey = "api_key",
+       Environment = "Development",
+       ReportData = true,
+       MinimumLogLevel = LogLevel.Error,
+       MinimumBreadcrumbLevel = LogLevel.Information
+   });
+   ```
+
+   Or you can configure Honeybadger through your `appsettings.json` file, by adding a `Honeybadger` section inside the `Logging` section:
+   ```json
+   {
+     "Logging": {
+       "Honeybadger": {
+          "ApiKey": "_api_key",
+          "AppEnvironment": "Development",
+          "ReportData": true,
+          "MinimumLogLevel": "Error",
+          "MinimumBreadcrumbLevel": "Information"
+       }
+     }
+   }
+   ```
+   And simply call `AddHoneybadger` without any parameters:
+   ```c#
+    var builder = WebApplication.CreateBuilder(args);
+    builder.Logging.AddHoneybadger();
+   ```
+
+#### Usage
+
+Errors from the `logger` will be reported to Honeybadger:
+   ```c#
+   app.MapGet("/notify", ([FromServices] ILogger logger) =>
+   {
+       logger.LogError("hello from Honeybadger.Logger!");
+       
+       return "Log reported to Honeybadger. Check your dashboard!";
+   });
+   ```
 
 See example project in `examples/Honeybadger.DotNetCoreWebApp.Logger`.
 
 ### Using the SDK manually
 
 1. Install the [Honeybadger Nuget](https://www.nuget.org/packages/Honeybadger).
-```
-dotnet add package Honeybadger
-```
+   ```
+   dotnet add package Honeybadger
+   ```
 2. Initialize the _Honeybadger Client_:
-```c#
-var client = HoneybadgerSdk.Init(new HoneybadgerOptions("apiKey")
-{
-    AppEnvironment = "development"
-});
-```
+   ```c#
+   using Microsoft.Extensions.Options;
+   
+   var options = new HoneybadgerOptions("apiKey");
+   var client = new HoneybadgerClient(Options.Create(options));
+   ```
 3. Call `notify` to report to Honeybadger:
-```c#
-client.Notify("hello from .Net !");
-```
+   ```c#
+   // blocking
+   client.Notify("hello from .Net !");
+   // or async
+   await client.NotifyAsync("hello from .Net !");
+   ```
 
 See example project in `examples/Honeybadger.Console`.
 
@@ -112,16 +172,11 @@ The workflow does the following:
 
 _Note: only users with write permissions can trigger this workflow (i.e. Collaborators)._
 
-## Known bugs
-
-- [ ] Always shows "Honeybadger.HoneybadgerClient" when reporting a notice with a message
-
 ## TODO
 
 - [ ] Publish README with basic info to setup core nuget
 - [ ] Publish Honeybadger.DotNetCore with README
 - [ ] Publish Honeybadger.Extensions.Logging with README
-- [ ] Deploy under Honeybadger org
 - [ ] Implement Error Grouping (custom fingerprint)
 - [ ] Implement Error Tags
 - [ ] Allow excluding errors (either with a BeforeNotify method or exception classes config)

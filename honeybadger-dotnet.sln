@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{9D7E2F87
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 		.gitignore = .gitignore
+		.github\workflows\ci.yml = .github\workflows\ci.yml
+		.github\workflows\release.yml = .github\workflows\release.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B3345FD5-AD45-4A59-9F7A-9DBF54656FF2}"
@@ -27,11 +29,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger.DotNetCore.Test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{89C7DC71-C55D-40D7-94F2-2F2F7C40FAC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger.Console", "examples\Honeybadger.Console\Honeybadger.Console.csproj", "{AD4D0F8B-CE5E-4782-9CF4-BDDA060DBA02}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger.DotNetCoreWebApp", "examples\Honeybadger.DotNetCoreWebApp\Honeybadger.DotNetCoreWebApp.csproj", "{8E0CD14F-BD8A-42B5-9A23-5E4C9D7ECBF7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger.DotNetCoreWebApp.Logger", "examples\Honeybadger.DotNetCoreWebApp.Logger\Honeybadger.DotNetCoreWebApp.Logger.csproj", "{938C7968-B408-4A5B-8587-9084A43C8C6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Honeybadger.Console", "examples\Honeybadger.Console\Honeybadger.Console.csproj", "{9CC59D5A-0A35-484B-B7F2-72F4E1BF60CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,10 +65,6 @@ Global
 		{C76193FD-7EEC-4B5B-B3BA-3854C847A8C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C76193FD-7EEC-4B5B-B3BA-3854C847A8C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C76193FD-7EEC-4B5B-B3BA-3854C847A8C2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AD4D0F8B-CE5E-4782-9CF4-BDDA060DBA02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AD4D0F8B-CE5E-4782-9CF4-BDDA060DBA02}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AD4D0F8B-CE5E-4782-9CF4-BDDA060DBA02}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AD4D0F8B-CE5E-4782-9CF4-BDDA060DBA02}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8E0CD14F-BD8A-42B5-9A23-5E4C9D7ECBF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8E0CD14F-BD8A-42B5-9A23-5E4C9D7ECBF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E0CD14F-BD8A-42B5-9A23-5E4C9D7ECBF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -75,6 +73,10 @@ Global
 		{938C7968-B408-4A5B-8587-9084A43C8C6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{938C7968-B408-4A5B-8587-9084A43C8C6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{938C7968-B408-4A5B-8587-9084A43C8C6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CC59D5A-0A35-484B-B7F2-72F4E1BF60CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CC59D5A-0A35-484B-B7F2-72F4E1BF60CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CC59D5A-0A35-484B-B7F2-72F4E1BF60CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CC59D5A-0A35-484B-B7F2-72F4E1BF60CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,8 +91,8 @@ Global
 		{6D843347-ADF1-4932-82A7-7D090C8A48FF} = {798689AD-BF0E-429E-BADA-5EFBFE5BFD8A}
 		{DECD1C4D-EF72-4190-96FB-FF5EBF53CA0B} = {798689AD-BF0E-429E-BADA-5EFBFE5BFD8A}
 		{C76193FD-7EEC-4B5B-B3BA-3854C847A8C2} = {798689AD-BF0E-429E-BADA-5EFBFE5BFD8A}
-		{AD4D0F8B-CE5E-4782-9CF4-BDDA060DBA02} = {89C7DC71-C55D-40D7-94F2-2F2F7C40FAC1}
 		{8E0CD14F-BD8A-42B5-9A23-5E4C9D7ECBF7} = {89C7DC71-C55D-40D7-94F2-2F2F7C40FAC1}
 		{938C7968-B408-4A5B-8587-9084A43C8C6A} = {89C7DC71-C55D-40D7-94F2-2F2F7C40FAC1}
+		{9CC59D5A-0A35-484B-B7F2-72F4E1BF60CA} = {89C7DC71-C55D-40D7-94F2-2F2F7C40FAC1}
 	EndGlobalSection
 EndGlobal

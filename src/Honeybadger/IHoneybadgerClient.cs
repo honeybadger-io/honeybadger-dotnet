@@ -17,5 +17,6 @@ public interface IHoneybadgerClient
     public void AddBreadcrumb(string message, string category, Dictionary<string, object?>? options = null);
     public void ResetBreadcrumbs();
     public HoneybadgerOptions Options { get; }
+    public void Configure(HoneybadgerOptions options);
 
     internal Trail[]? GetBreadcrumbs(); }

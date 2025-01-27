@@ -3,10 +3,7 @@ using Honeybadger.DotNetCore;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddHoneybadger(new HoneybadgerOptions("YOUR_HONEYBADGER_API_KEY")
-{
-    AppEnvironment = "development"
-});
+builder.AddHoneybadger();
 
 var app = builder.Build();
 app.MapGet("/", ([FromServices] IHoneybadgerClient client) =>
@@ -16,7 +13,7 @@ app.MapGet("/", ([FromServices] IHoneybadgerClient client) =>
 });
 app.MapGet("/debug", () =>
 {
-    throw new Exception("hello from .Net Core Web App!");
+    throw new Exception("Hello from .Net Core Web App! Improved error handling with Honeybadger.");
 });
 
 app.Run();

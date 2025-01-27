@@ -18,7 +18,7 @@ public class HoneybadgerMiddleware
         // needed for HoneybadgerStartupFilter.cs
         context.Items[HttpContextItemsKey] = client;
         
-        if (!client.Options.ReportData)
+        if (!client.Options.ShouldReport())
         {
             await _next(context);
             return;
@@ -30,7 +30,8 @@ public class HoneybadgerMiddleware
         }
         catch (Exception exception)
         {
-            await client.NotifyAsync(exception);
+            // we don't want to block execution, so no await here
+            _ = client.NotifyAsync(exception).ConfigureAwait(false);
             throw;
         }
     }

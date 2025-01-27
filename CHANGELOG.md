@@ -1,5 +1,13 @@
 
 
+<a name="0.4.0"></a>
+## [0.4.0](https://www.github.com/honeybadger-io/honeybadger-dotnet/releases/tag/v0.4.0) (2025-01-27)
+
+### Features
+
+* add support for .net 8 and 9 ([8d1d134](https://www.github.com/honeybadger-io/honeybadger-dotnet/commit/8d1d134b23097b215b02881f7823886e7acca6ae))
+* add support for .net 8.0 and 9.0 ([ae8ddd3](https://www.github.com/honeybadger-io/honeybadger-dotnet/commit/ae8ddd3e3e6a919c5acbed622724b91ba0601326))
+
 <a name="0.3.0"></a>
 ## [0.3.0](https://www.github.com/honeybadger-io/honeybadger-dotnet/releases/tag/v0.3.0) (2023-1-24)
 

@@ -37,7 +37,7 @@ See below for examples on how to configure Honeybadger for different types of ap
    ```json
    {
      "Honeybadger": {
-       "ApiKey": "_api_key",
+       "ApiKey": "api_key",
        "AppEnvironment": "Development",
        "ReportData": true 
      }
@@ -51,7 +51,7 @@ See below for examples on how to configure Honeybadger for different types of ap
 
 #### Usage
 
-You can get access to the _Honeybadger Client_ using _DI_:
+You can access the _Honeybadger Client_ using _DI_:
 ```c#
 app.MapGet("/", ([FromServices] IHoneybadgerClient client) =>
 {
@@ -139,7 +139,10 @@ See example project in `examples/Honeybadger.DotNetCoreWebApp.Logger`.
    ```
 3. Call `notify` to report to Honeybadger:
    ```c#
+   // blocking
    client.Notify("hello from .Net !");
+   // or async
+   await client.NotifyAsync("hello from .Net !");
    ```
 
 See example project in `examples/Honeybadger.Console`.

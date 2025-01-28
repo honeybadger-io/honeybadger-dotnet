@@ -85,7 +85,7 @@ See example project in `examples/Honeybadger.DotNetCoreWebApp`.
        ApiKey = "api_key",
        Environment = "Development",
        ReportData = true,
-       MinimumLogLevel = LogLevel.Error,
+       MinimumNoticeLevel = LogLevel.Error,
        MinimumBreadcrumbLevel = LogLevel.Information
    });
    ```
@@ -95,10 +95,10 @@ See example project in `examples/Honeybadger.DotNetCoreWebApp`.
    {
      "Logging": {
        "Honeybadger": {
-          "ApiKey": "_api_key",
+          "ApiKey": "api_key",
           "AppEnvironment": "Development",
           "ReportData": true,
-          "MinimumLogLevel": "Error",
+          "MinimumNoticeLevel": "Error",
           "MinimumBreadcrumbLevel": "Information"
        }
      }

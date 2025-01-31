@@ -1,5 +1,12 @@
 
 
+<a name="0.4.1"></a>
+## [0.4.1](https://www.github.com/honeybadger-io/honeybadger-dotnet/releases/tag/v0.4.1) (2025-01-31)
+
+### Bug Fixes
+
+* improve logger configuration and exception logging ([2b11d14](https://www.github.com/honeybadger-io/honeybadger-dotnet/commit/2b11d14ac8cb1a9f2eb01016d72c2895ef3664a9))
+
 <a name="0.4.0"></a>
 ## [0.4.0](https://www.github.com/honeybadger-io/honeybadger-dotnet/releases/tag/v0.4.0) (2025-01-27)
 

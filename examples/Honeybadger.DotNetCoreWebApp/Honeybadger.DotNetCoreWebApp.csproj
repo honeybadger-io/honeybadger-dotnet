@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\Honeybadger.DotNetCore\Honeybadger.DotNetCore.csproj" />
+      <ProjectReference Include="..\..\src\Honeybadger.Extensions.Logging\Honeybadger.Extensions.Logging.csproj" />
     </ItemGroup>
 
 </Project>

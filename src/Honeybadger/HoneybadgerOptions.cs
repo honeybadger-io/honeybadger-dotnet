@@ -5,22 +5,22 @@ public class HoneybadgerOptions
     /// <summary>
     /// Required. The project's private API key.
     /// </summary>
-    public string ApiKey { get; set; }
+    public string ApiKey { get; set; } = null!;
 
     /// <summary>
     /// The path to the project's executable code.
     /// </summary>
-    public string? ProjectRoot { get; set; } = null;
+    public string? ProjectRoot { get; set; }
 
     /// <summary>
     /// The environment name of the application.
     /// </summary>
-    public string? AppEnvironment { get; set; } = null;
+    public string? AppEnvironment { get; set; } = "Production";
 
     /// <summary>
     /// The hostname of the system.
     /// </summary>
-    public string HostName { get; set; }
+    public string HostName { get; set; } = "";
 
     /// <summary>
     /// The base API Endpoint
@@ -46,7 +46,7 @@ public class HoneybadgerOptions
     /// <summary>
     /// The revision of the current deploy
     /// </summary>
-    public string? Revision { get; set; }
+    public string? Revision { get; set; } = null;
 
     /// <summary>
     /// Allow/disallow breadcrumbs.
@@ -62,53 +62,14 @@ public class HoneybadgerOptions
     /// Mostly here to be utilized by unit tests.
     /// </summary>
     public HttpClient? HttpClient { get; set; }
-
-    public HoneybadgerOptions()
-    {
-        ApiKey = Environment.GetEnvironmentVariable("HONEYBADGER_API_KEY") ?? "";
-        ProjectRoot = Environment.GetEnvironmentVariable("HONEYBADGER_PROJECT_ROOT");
-        AppEnvironment = (Environment.GetEnvironmentVariable("HONEYBADGER_APP_ENVIRONMENT") ??
-                          Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "development").ToLower();
-        HostName = Environment.GetEnvironmentVariable("HONEYBADGER_HOSTNAME") ?? Constants.DefaultHostname;
-        var endpoint = Environment.GetEnvironmentVariable("HONEYBADGER_ENDPOINT");
-        if (endpoint != null)
-        {
-            Endpoint = new Uri(endpoint);
-        }
-
-        var filterKeys = GetArrayFromEnv("HONEYBADGER_FILTER_KEYS");
-        if (filterKeys != null)
-        {
-            FilterKeys = filterKeys;
-        }
-
-        var devEnvironments = GetArrayFromEnv("HONEYBADGER_DEVELOPMENT_ENVIRONMENTS");
-        if (devEnvironments != null)
-        {
-            DevelopmentEnvironments = devEnvironments;
-        }
-
-        ReportData = GetBoolFromEnv("HONEYBADGER_REPORT_DATA") ?? false;
-        Revision = Environment.GetEnvironmentVariable("HONEYBADGER_REVISION");
-
-        var breadcrumbsEnabled = GetBoolFromEnv("HONEYBADGER_BREADCRUMBS_ENABLED");
-        if (breadcrumbsEnabled.HasValue)
-        {
-            BreadcrumbsEnabled = breadcrumbsEnabled.Value;
-        }
-
-        var maxBreadcrumbs = GetIntFromEnv("HONEYBADGER_MAX_BREADCRUMBS");
-        if (maxBreadcrumbs.HasValue)
-        {
-            MaxBreadcrumbs = maxBreadcrumbs.Value;
-        }
-    }
-
-    public HoneybadgerOptions(string apiKey) : this()
-    {
-        ApiKey = apiKey;
-    }
-
+    
+    /// <summary>
+    /// Automatically report unhandled exceptions for
+    /// .Net Core web applications by registering a middleware
+    /// to catch unhandled exceptions.
+    /// </summary>
+    public bool ReportUnhandledExceptions { get; set; } = true; 
+    
     public bool ShouldReport()
     {
         if (string.IsNullOrEmpty(ApiKey))
@@ -122,37 +83,5 @@ public class HoneybadgerOptions
         }
         
         return !DevelopmentEnvironments.Contains(AppEnvironment, StringComparer.InvariantCultureIgnoreCase);
-    }
-
-    private static string[]? GetArrayFromEnv(string envName)
-    {
-        var result = Environment.GetEnvironmentVariable(envName);
-        return result?.Split(',').Select(i => i.Trim()).ToArray();
-    }
-
-    private static bool? GetBoolFromEnv(string envName)
-    {
-        var readFromEnv = false;
-        var envValue = false;
-        var envValueStr = Environment.GetEnvironmentVariable(envName);
-        if (envValueStr != null)
-        {
-            readFromEnv = bool.TryParse(envValueStr, out envValue);
-        }
-
-        return readFromEnv ? envValue : null;
-    }
-
-    private static int? GetIntFromEnv(string envName)
-    {
-        var readFromEnv = false;
-        var envValue = 0;
-        var envValueStr = Environment.GetEnvironmentVariable(envName);
-        if (envValueStr != null)
-        {
-            readFromEnv = int.TryParse(envValueStr, out envValue);
-        }
-
-        return readFromEnv ? envValue : null;
     }
 }

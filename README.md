@@ -10,8 +10,7 @@ All modern .Net Core applications are supported, up to .Net 9.0.
 
 ### Configuration
 
-The Honeybadger Notifier can be configured using the `HoneybadgerOptions` class
-(or `HoneybadgerLoggingOptions` when using as a logger).
+The Honeybadger Notifier can be configured using the `HoneybadgerOptions` class.
 Honeybadger can be configured by passing the options when registering the service,
 or through your `appsettings.json` file.
 
@@ -30,14 +29,14 @@ See below for examples on how to configure Honeybadger for different types of ap
 2. Register the _Honeybadger Middleware_:
    ```c#
    var builder = WebApplication.CreateBuilder(args);
-   builder.AddHoneybadger(new HoneybadgerOptions("api_key"));
+   builder.AddHoneybadger(new HoneybadgerOptions("apiKey"));
    ```
    
    Or you can configure Honeybadger through your `appsettings.json` file, by adding a `Honeybadger` section:
    ```json
    {
      "Honeybadger": {
-       "ApiKey": "api_key",
+       "ApiKey": "apiKey",
        "AppEnvironment": "Development",
        "ReportData": true 
      }
@@ -61,7 +60,7 @@ app.MapGet("/", ([FromServices] IHoneybadgerClient client) =>
 });
 ```
 
-Any unhandled exceptions should be reported to Honeybadger automatically:
+Any unhandled exceptions should be reported to Honeybadger automatically (unless `ReportUnhandledExceptions` is set to false):
 ```c#
 app.MapGet("/debug", () =>
 {
@@ -77,37 +76,41 @@ See example project in `examples/Honeybadger.DotNetCoreWebApp`.
    ```
    dotnet add package Honeybadger.Extensions.Logging
    ```
-2. Register the custom logging provider:
+2. Register Honeybadger and additionally the custom logging provider:
    ```c#
    var builder = WebApplication.CreateBuilder(args);
-   builder.Logging.AddHoneybadger(new HoneybadgerLoggingOptions 
-   {
-       ApiKey = "api_key",
-       Environment = "Development",
-       ReportData = true,
-       MinimumNoticeLevel = LogLevel.Error,
-       MinimumBreadcrumbLevel = LogLevel.Information
-   });
+   // or set the configuration in the appsettings.json file
+   builder.AddHoneybadger(new HoneybadgerOptions("apiKey"));
+   builder.Logging.AddHoneybadger();
    ```
 
-   Or you can configure Honeybadger through your `appsettings.json` file, by adding a `Honeybadger` section inside the `Logging` section:
+   You should also configure the minimum log level as you would configure other log providers in .Net Core.
+   The following would report only logged errors:
    ```json
    {
      "Logging": {
        "Honeybadger": {
-          "ApiKey": "api_key",
-          "AppEnvironment": "Development",
-          "ReportData": true,
-          "MinimumNoticeLevel": "Error",
-          "MinimumBreadcrumbLevel": "Information"
+          "Default": "Error"
        }
      }
    }
    ```
-   And simply call `AddHoneybadger` without any parameters:
+   And simply call `AddHoneybadger` and `Logging.AddHoneybadger` without any parameters:
    ```c#
     var builder = WebApplication.CreateBuilder(args);
+    builder.AddHoneybadger();
     builder.Logging.AddHoneybadger();
+   ```
+   Note: If you want to disable automatic reporting of unhandled exceptions, you can set the `ReportUnhandledExceptions` property to `false` in the `HoneybadgerOptions`:
+   ```json
+   {
+     "Honeybadger": {
+       "ApiKey": "apiKey",
+       "AppEnvironment": "Development",
+       "ReportData": true,
+       "ReportUnhandledExceptions": false
+     }
+   }
    ```
 
 #### Usage

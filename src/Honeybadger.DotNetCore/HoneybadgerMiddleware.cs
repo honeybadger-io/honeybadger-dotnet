@@ -30,8 +30,12 @@ public class HoneybadgerMiddleware
         }
         catch (Exception exception)
         {
-            // we don't want to block execution, so no await here
-            _ = client.NotifyAsync(exception).ConfigureAwait(false);
+            if (client.Options.ShouldReport() &&
+                client.Options.ReportUnhandledExceptions)
+            {
+                // we don't want to block execution, so no await here
+                _ = client.NotifyAsync(exception).ConfigureAwait(false);    
+            }
             throw;
         }
     }

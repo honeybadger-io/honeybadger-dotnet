@@ -15,11 +15,34 @@ public static class ServiceCollectionExtensions
     {
         //services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         
-        builder.Services.Configure<HoneybadgerOptions>(builder.Configuration.GetSection("Honeybadger"));
-
+        var configSection = builder.Configuration.GetSection("Honeybadger");
+        
         if (configure is not null)
         {
-            builder.Services.Configure(configure);    
+            var options = new HoneybadgerOptions();
+            configSection.Bind(options);            
+            configure(options);
+            builder.Services.Configure<HoneybadgerOptions>(config =>
+            {
+                config.ApiKey = options.ApiKey;
+                config.AppEnvironment = options.AppEnvironment;
+                config.BreadcrumbsEnabled = options.BreadcrumbsEnabled;
+                config.DevelopmentEnvironments = options.DevelopmentEnvironments;
+                config.Endpoint = options.Endpoint;
+                config.FilterKeys = options.FilterKeys;
+                config.HostName = options.HostName;
+                config.HttpClient = options.HttpClient;
+                config.MaxBreadcrumbs = options.MaxBreadcrumbs;
+                config.ProjectRoot = options.ProjectRoot;
+                config.ReportData = options.ReportData;
+                config.Revision = options.Revision;
+                config.ReportUnhandledExceptions = options.ReportUnhandledExceptions;
+                
+            });
+        }
+        else
+        {
+            builder.Services.Configure<HoneybadgerOptions>(configSection);
         }
         
         builder.Services

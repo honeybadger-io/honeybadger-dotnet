@@ -5,9 +5,9 @@ namespace Honeybadger.Extensions.Logging;
 public class HoneybadgerLogger : ILogger
 {
     private readonly IHoneybadgerClient _client;
-    private readonly Func<HoneybadgerLoggingOptions> _getOptions;
+    private readonly Func<HoneybadgerLoggerOptions> _getOptions;
 
-    internal HoneybadgerLogger(IHoneybadgerClient client, Func<HoneybadgerLoggingOptions> getCurrentConfig)
+    internal HoneybadgerLogger(IHoneybadgerClient client, Func<HoneybadgerLoggerOptions> getCurrentConfig)
     {
         _client = client;
         _getOptions = getCurrentConfig;
@@ -20,48 +20,36 @@ public class HoneybadgerLogger : ILogger
         {
             return;
         }
-
-        if (ShouldAddBreadcrumb(logLevel))
-        {
-            var message = formatter(state, exception);
-            _client.AddBreadcrumb(
-                message,
-                "log",
-                new Dictionary<string, object?>()
-                {
-                    {"Level", logLevel},
-                }
-            );    
-        }
         
-        if (ShouldReport(logLevel))
+        if (exception is null)
         {
-            if (exception is null)
-            {
-                var notice = formatter(state, exception);
-                _client.NotifyAsync(notice).ConfigureAwait(false);
-            }
-            else
-            {
-                _client.NotifyAsync(exception).ConfigureAwait(false);
-            }
+            var notice = formatter(state, exception);
+            _client.NotifyAsync(notice).ConfigureAwait(false);
+        }
+        // We might reach here because of logger.UnhandledException.
+        // This may be called from DiagnosticsLoggerExtensions.cs (DeveloperExceptionPageMiddleware.cs)
+        // If ReportUnhandledExceptions is set to false, we should not report the exception.
+        else if (ShouldReportException(eventId))
+        {
+            _client.NotifyAsync(exception).ConfigureAwait(false);
         }
     }
 
     public bool IsEnabled(LogLevel logLevel)
     {
-        return _getOptions().ShouldReport();
+        return _client.Options.ShouldReport();
+    }
+    
+    private bool IsUnhandledException(EventId eventId)
+    {
+        return eventId.Name?.Equals("UnhandledException") == true;
+    }
+    
+    private bool ShouldReportException(EventId eventId)
+    {
+        return !IsUnhandledException(eventId) ||
+               (IsUnhandledException(eventId) && _client.Options.ReportUnhandledExceptions);
     }
 
     public IDisposable BeginScope<TState>(TState state) where TState : notnull => null!;
-
-    private bool ShouldReport(LogLevel logLevel)
-    {
-        return _getOptions().MinimumNoticeLevel <= logLevel;
-    }
-
-    private bool ShouldAddBreadcrumb(LogLevel logLevel)
-    {
-        return _getOptions().MinimumBreadcrumbLevel >= logLevel;
-    }
 }

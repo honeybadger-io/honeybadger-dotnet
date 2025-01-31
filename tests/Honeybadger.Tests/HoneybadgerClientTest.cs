@@ -17,8 +17,9 @@ public class HoneybadgerClientTest
     [Fact]
     public void InitializesClient()
     {
-        var options = Options.Create(new HoneybadgerOptions("test")
+        var options = Options.Create(new HoneybadgerOptions
         {
+            ApiKey = "test",
             ReportData = false
         });
         
@@ -60,8 +61,9 @@ public class HoneybadgerClientTest
                 Content = new StringContent("")
             });
         
-        var options = Options.Create(new HoneybadgerOptions("test")
+        var options = Options.Create(new HoneybadgerOptions
         {
+            ApiKey = "test",
             HttpClient = new HttpClient(mockHttpHandler.Object)
         });
         var client = new HoneybadgerClient(options);
@@ -94,8 +96,9 @@ public class HoneybadgerClientTest
                 Content = new StringContent("")
             });
         
-        var options = Options.Create(new HoneybadgerOptions("test")
+        var options = Options.Create(new HoneybadgerOptions
         {
+            ApiKey = "test",
             HttpClient = new HttpClient(mockHttpHandler.Object)
         });
         var client = new HoneybadgerClient(options);

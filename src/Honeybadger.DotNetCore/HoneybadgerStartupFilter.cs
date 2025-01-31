@@ -44,8 +44,10 @@ public class HoneybadgerStartupFilter : IStartupFilter
         private static void LogException(Exception exception, HttpContext httpContext)
         {
             httpContext.Items.TryGetValue(HoneybadgerMiddleware.HttpContextItemsKey, out var clientObject);
-
-            if (clientObject is IHoneybadgerClient client)
+            
+            if (clientObject is IHoneybadgerClient client && 
+                client.Options.ShouldReport() && 
+                client.Options.ReportUnhandledExceptions)
             {
                 // no need to await, we're in a fire-and-forget context
                 client.NotifyAsync(exception).ConfigureAwait(false);

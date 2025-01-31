@@ -21,12 +21,12 @@ public static class LoggerFactoryExtensions
             ServiceDescriptor.Singleton<ILoggerProvider, HoneybadgerLoggerProvider>());
         
         LoggerProviderOptions.RegisterProviderOptions
-            <HoneybadgerLoggingOptions, HoneybadgerLoggerProvider>(builder.Services);
+            <HoneybadgerLoggerOptions, HoneybadgerLoggerProvider>(builder.Services);
 
         return builder;
     }
 
-    public static ILoggingBuilder AddHoneybadger(this ILoggingBuilder builder, Action<HoneybadgerLoggingOptions> configure)
+    public static ILoggingBuilder AddHoneybadger(this ILoggingBuilder builder, Action<HoneybadgerLoggerOptions> configure)
     {
         builder.AddHoneybadger();
         builder.Services.Configure(configure);

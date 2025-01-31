@@ -10,9 +10,9 @@ public class HoneybadgerLoggerProvider : ILoggerProvider
 {
     private readonly IHoneybadgerClient _client;
     private readonly IDisposable _onChangeToken;
-    private HoneybadgerLoggingOptions _currentConfig;
+    private HoneybadgerLoggerOptions _currentConfig;
 
-    public HoneybadgerLoggerProvider(IHoneybadgerClient client, IOptionsMonitor<HoneybadgerLoggingOptions> config)
+    public HoneybadgerLoggerProvider(IHoneybadgerClient client, IOptionsMonitor<HoneybadgerLoggerOptions> config)
     {
         _client = client;
         _currentConfig = config.CurrentValue;
@@ -21,7 +21,6 @@ public class HoneybadgerLoggerProvider : ILoggerProvider
     
     public ILogger CreateLogger(string categoryName)
     {
-        _client.Configure(_currentConfig);
         return new HoneybadgerLogger(_client, () => _currentConfig);
     }
     

@@ -168,6 +168,11 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
 
     private async Task Send(Notice notice)
     {
+        if (!Options.ShouldReport())
+        {
+            return;
+        }
+        
         // Console.WriteLine("Ready to send report to Honeybadger");
         var request = new HttpRequestMessage(HttpMethod.Post, "v1/notices");
         var json = JsonSerializer.Serialize(notice, new JsonSerializerOptions
@@ -190,7 +195,7 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
         }
         catch (Exception ex)
         {
-            await Console.Error.WriteLineAsync(ex.Message);
+            // await Console.Error.WriteLineAsync(ex.Message);
         }
     }
 

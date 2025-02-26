@@ -167,6 +167,8 @@ Conventional Commits are enforced with a pre-commit git hook (using [husky](http
 
 ## Releasing
 
+**Note**: Automated releases are not yet fully functional. See [Manual Releases](#manual-releases) for the current process.
+
 All packages are published on nuget.org with a [Github Actions Worfklow](./.github/workflows/release.yml).
 The workflow does the following:
 - `dotnet versionize` - bump versions and generate changelog
@@ -174,6 +176,24 @@ The workflow does the following:
 - `dotnet package push`
 
 _Note: only users with write permissions can trigger this workflow (i.e. Collaborators)._
+
+### Manual Releases
+
+Our automated release process is not yet fully functional for the following reason:  
+Since `Honeybadger` is a dependency of `Honeybadger.Extensions.Logging` and `Honeybadger.DotNetCore`, 
+we need to release `Honeybadger` first, then update the dependencies in the other projects and finally release those two projects.
+
+To release manually, execute the following steps:
+1. Run `dotnet versionize` in the root directory. This will bump the version in all projects and commit the new version as a tag.
+2. Run `dotnet pack ./src/Honeybadger --configuration Release`
+3. Run `dotnet nuget push ./src/Honeybadger/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key YOUR_API_KEY`
+4. Update the dependencies in `Honeybadger.Extensions.Logging` and `Honeybadger.DotNetCore` to the new version of `Honeybadger`.
+5. Run `dotnet pack ./src/Honeybadger.Extensions.Logging --configuration Release`
+6. Run `dotnet nuget push ./src/Honeybadger.Extensions.Logging/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key YOUR_API_KEY`
+7. Run `dotnet pack ./src/Honeybadger.DotNetCore --configuration Release`
+8. Run `dotnet nuget push ./src/Honeybadger.DotNetCore/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key YOUR_API_KEY`
+9. Commit the changes in the `Honeybadger.Extensions.Logging` and `Honeybadger.DotNetCore` projects.
+10. Push the changes to the repository - at this point you will have pushed the git tags + the new versions of the packages to nuget.org.
 
 ## TODO
 

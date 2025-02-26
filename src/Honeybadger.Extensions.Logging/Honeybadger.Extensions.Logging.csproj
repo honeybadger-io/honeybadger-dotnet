@@ -10,7 +10,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseUrl>https://github.com/honeybadger-io/honeybadger-dotnet/MIT_LICENSE</PackageLicenseUrl>
         <PackageTags>honeybadger, exception, error, monitoring</PackageTags>
-        <Version>0.4.1</Version>
+        <Version>0.5.0</Version>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Honeybadger" Version="0.4.1" />
+      <PackageReference Include="Honeybadger" Version="0.5.0" />
       <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.1" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1" />
       <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.1" />

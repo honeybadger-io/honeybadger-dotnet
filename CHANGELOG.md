@@ -1,5 +1,16 @@
 
 
+<a name="0.5.0"></a>
+## [0.5.0](https://www.github.com/honeybadger-io/honeybadger-dotnet/releases/tag/v0.5.0) (2025-02-26)
+
+### Features
+
+* add support of IHostBuilder ([92733a6](https://www.github.com/honeybadger-io/honeybadger-dotnet/commit/92733a6ef8c4da71cd1008e50584e099554bb596))
+
+### Bug Fixes
+
+* synchronous non-blocking version of notify() ([d1ae1d3](https://www.github.com/honeybadger-io/honeybadger-dotnet/commit/d1ae1d3d153dc89e370b32a943241472433c8a87))
+
 <a name="0.4.1"></a>
 ## [0.4.1](https://www.github.com/honeybadger-io/honeybadger-dotnet/releases/tag/v0.4.1) (2025-01-31)
 

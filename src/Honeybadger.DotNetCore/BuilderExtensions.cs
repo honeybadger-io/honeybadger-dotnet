@@ -15,14 +15,41 @@ public static class ServiceCollectionExtensions
     {
         //services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         
-        var configSection = builder.Configuration.GetSection("Honeybadger");
+        ApplyConfiguration(builder.Services, builder.Configuration, configure);
+        
+        builder.Services.AddHoneybadger();
+    }
+    
+    public static void AddHoneybadger(this IHostBuilder builder, Action<HoneybadgerOptions>? configure = null)
+    {
+        builder.ConfigureServices((context, services) =>
+        {
+            ApplyConfiguration(services, context.Configuration, configure);
+            
+            services.AddHoneybadger();
+        });
+    }
+
+    public static IServiceCollection AddHoneybadger(this IServiceCollection services)
+    {
+        services
+            .AddHttpClient()
+            .AddSingleton<IStartupFilter, HoneybadgerStartupFilter>()
+            .AddScoped<IHoneybadgerClient, HoneybadgerClient>();
+
+        return services;
+    }
+
+    private static void ApplyConfiguration(IServiceCollection services, IConfiguration configuration, Action<HoneybadgerOptions>? configure = null)
+    {
+        var configSection = configuration.GetSection("Honeybadger");
         
         if (configure is not null)
         {
             var options = new HoneybadgerOptions();
             configSection.Bind(options);            
             configure(options);
-            builder.Services.Configure<HoneybadgerOptions>(config =>
+            services.Configure<HoneybadgerOptions>(config =>
             {
                 config.ApiKey = options.ApiKey;
                 config.AppEnvironment = options.AppEnvironment;
@@ -42,12 +69,7 @@ public static class ServiceCollectionExtensions
         }
         else
         {
-            builder.Services.Configure<HoneybadgerOptions>(configSection);
+            services.Configure<HoneybadgerOptions>(configSection);
         }
-        
-        builder.Services
-            .AddHttpClient()
-            .AddSingleton<IStartupFilter, HoneybadgerStartupFilter>()
-            .AddScoped<IHoneybadgerClient, HoneybadgerClient>();
     }
 }

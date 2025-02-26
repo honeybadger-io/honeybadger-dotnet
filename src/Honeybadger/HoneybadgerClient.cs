@@ -48,7 +48,7 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
 
     private void Notify(Notice notice)
     {
-        Send(notice).Wait();
+        _ = Task.Run(async () => await NotifyAsync(notice)).ConfigureAwait(false);
     }
 
     public Task NotifyAsync(string message)

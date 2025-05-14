@@ -22,45 +22,53 @@ See below for examples on how to configure Honeybadger for different types of ap
 
 ### For .Net Core Web App
 
-1. Install Honeybadger.DotNetCore from Nuget
-   ```
-   dotnet add package Honeybadger.DotNetCore
-   ```
-2. Register the _Honeybadger Middleware_:
-   ```c#
-   var builder = WebApplication.CreateBuilder(args);
-   builder.AddHoneybadger(new HoneybadgerOptions("apiKey"));
-   ```
-   
-   Or you can configure Honeybadger through your `appsettings.json` file, by adding a `Honeybadger` section:
-   ```json
-   {
-     "Honeybadger": {
-       "ApiKey": "apiKey",
-       "AppEnvironment": "Development",
-       "ReportData": true 
-     }
+#### 1. Install Honeybadger.DotNetCore from Nuget
+
+```sh
+dotnet add package Honeybadger.DotNetCore
+```
+
+#### 2. Register the _Honeybadger Middleware_:
+
+```c#
+var builder = WebApplication.CreateBuilder(args);
+builder.AddHoneybadger(new HoneybadgerOptions("apiKey"));
+```
+
+Or you can configure Honeybadger through your `appsettings.json` file, by adding a `Honeybadger` section:
+
+```json
+{
+   "Honeybadger": {
+      "ApiKey": "apiKey",
+      "AppEnvironment": "Development",
+      "ReportData": true
    }
-   ```
-   And simply call `AddHoneybadger` without any parameters:
-   ```c#
-    var builder = WebApplication.CreateBuilder(args);
-    builder.AddHoneybadger();
-   ```
+}
+```
+
+And simply call `AddHoneybadger` without any parameters:
+
+```c#
+var builder = WebApplication.CreateBuilder(args);
+builder.AddHoneybadger();
+```
 
 #### Usage
 
 You can access the _Honeybadger Client_ using _DI_:
+
 ```c#
 app.MapGet("/", ([FromServices] IHoneybadgerClient client) =>
 {
     client.AddBreadcrumb("reached index route", "route", new Dictionary<string, object?>());
-    
+
     return "Hello World!";
 });
 ```
 
 Any unhandled exceptions should be reported to Honeybadger automatically (unless `ReportUnhandledExceptions` is set to false):
+
 ```c#
 app.MapGet("/debug", () =>
 {
@@ -70,83 +78,97 @@ app.MapGet("/debug", () =>
 
 See example project in `examples/Honeybadger.DotNetCoreWebApp`.
 
-### As a custom logging provider 
+### As a custom logging provider
 
-1. Install Honeybadger.Extensions.Logging from Nuget
-   ```
-   dotnet add package Honeybadger.Extensions.Logging
-   ```
-2. Register Honeybadger and additionally the custom logging provider:
-   ```c#
-   var builder = WebApplication.CreateBuilder(args);
-   // or set the configuration in the appsettings.json file
-   builder.AddHoneybadger(new HoneybadgerOptions("apiKey"));
-   builder.Logging.AddHoneybadger();
-   ```
+#### 1. Install Honeybadger.Extensions.Logging from Nuget
 
-   You should also configure the minimum log level as you would configure other log providers in .Net Core.
-   The following would report only logged errors:
-   ```json
-   {
-     "Logging": {
-       "Honeybadger": {
-          "Default": "Error"
-       }
-     }
+```sh
+dotnet add package Honeybadger.Extensions.Logging
+```
+
+#### 2. Register Honeybadger and additionally the custom logging provider:
+
+```c#
+var builder = WebApplication.CreateBuilder(args);
+// or set the configuration in the appsettings.json file
+builder.AddHoneybadger(new HoneybadgerOptions("apiKey"));
+builder.Logging.AddHoneybadger();
+```
+
+You should also configure the minimum log level as you would configure other log providers in .Net Core.
+The following would report only logged errors:
+
+```json
+{
+   "Logging": {
+      "Honeybadger": {
+         "Default": "Error"
+      }
    }
-   ```
-   And simply call `AddHoneybadger` and `Logging.AddHoneybadger` without any parameters:
-   ```c#
-    var builder = WebApplication.CreateBuilder(args);
-    builder.AddHoneybadger();
-    builder.Logging.AddHoneybadger();
-   ```
-   Note: If you want to disable automatic reporting of unhandled exceptions, you can set the `ReportUnhandledExceptions` property to `false` in the `HoneybadgerOptions`:
-   ```json
-   {
-     "Honeybadger": {
-       "ApiKey": "apiKey",
-       "AppEnvironment": "Development",
-       "ReportData": true,
-       "ReportUnhandledExceptions": false
-     }
+}
+```
+
+And simply call `AddHoneybadger` and `Logging.AddHoneybadger` without any parameters:
+
+```c#
+var builder = WebApplication.CreateBuilder(args);
+builder.AddHoneybadger();
+builder.Logging.AddHoneybadger();
+```
+
+Note: If you want to disable automatic reporting of unhandled exceptions, you can set the `ReportUnhandledExceptions` property to `false` in the `HoneybadgerOptions`:
+
+```json
+{
+   "Honeybadger": {
+      "ApiKey": "apiKey",
+      "AppEnvironment": "Development",
+      "ReportData": true,
+      "ReportUnhandledExceptions": false
    }
-   ```
+}
+```
 
 #### Usage
 
 Errors from the `logger` will be reported to Honeybadger:
-   ```c#
-   app.MapGet("/notify", ([FromServices] ILogger logger) =>
-   {
-       logger.LogError("hello from Honeybadger.Logger!");
-       
-       return "Log reported to Honeybadger. Check your dashboard!";
-   });
-   ```
+
+```c#
+app.MapGet("/notify", ([FromServices] ILogger logger) =>
+{
+      logger.LogError("hello from Honeybadger.Logger!");
+
+      return "Log reported to Honeybadger. Check your dashboard!";
+});
+```
 
 See example project in `examples/Honeybadger.DotNetCoreWebApp.Logger`.
 
 ### Using the SDK manually
 
-1. Install the [Honeybadger Nuget](https://www.nuget.org/packages/Honeybadger).
-   ```
-   dotnet add package Honeybadger
-   ```
-2. Initialize the _Honeybadger Client_:
-   ```c#
-   using Microsoft.Extensions.Options;
-   
-   var options = new HoneybadgerOptions("apiKey");
-   var client = new HoneybadgerClient(Options.Create(options));
-   ```
-3. Call `notify` to report to Honeybadger:
-   ```c#
-   // blocking
-   client.Notify("hello from .Net !");
-   // or async
-   await client.NotifyAsync("hello from .Net !");
-   ```
+#### 1. Install the [Honeybadger Nuget](https://www.nuget.org/packages/Honeybadger).
+
+```sh
+dotnet add package Honeybadger
+```
+
+#### 2. Initialize the _Honeybadger Client_:
+
+```c#
+using Microsoft.Extensions.Options;
+
+var options = new HoneybadgerOptions("apiKey");
+var client = new HoneybadgerClient(Options.Create(options));
+```
+
+#### 3. Call `notify` to report to Honeybadger:
+
+```c#
+// blocking
+client.Notify("hello from .Net !");
+// or async
+await client.NotifyAsync("hello from .Net !");
+```
 
 See example project in `examples/Honeybadger.Console`.
 
@@ -171,6 +193,7 @@ Conventional Commits are enforced with a pre-commit git hook (using [husky](http
 
 All packages are published on nuget.org with a [Github Actions Worfklow](./.github/workflows/release.yml).
 The workflow does the following:
+
 - `dotnet versionize` - bump versions and generate changelog
 - `dotnet pack`
 - `dotnet package push`
@@ -179,11 +202,12 @@ _Note: only users with write permissions can trigger this workflow (i.e. Collabo
 
 ### Manual Releases
 
-Our automated release process is not yet fully functional for the following reason:  
-Since `Honeybadger` is a dependency of `Honeybadger.Extensions.Logging` and `Honeybadger.DotNetCore`, 
+Our automated release process is not yet fully functional for the following reason:
+Since `Honeybadger` is a dependency of `Honeybadger.Extensions.Logging` and `Honeybadger.DotNetCore`,
 we need to release `Honeybadger` first, then update the dependencies in the other projects and finally release those two projects.
 
 To release manually, execute the following steps:
+
 1. Run `dotnet versionize` in the root directory. This will bump the version in all projects and commit the new version as a tag.
 2. Run `dotnet pack ./src/Honeybadger --configuration Release`
 3. Run `dotnet nuget push ./src/Honeybadger/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key YOUR_API_KEY`

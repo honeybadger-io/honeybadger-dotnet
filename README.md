@@ -32,7 +32,7 @@ dotnet add package Honeybadger.DotNetCore
 
 ```c#
 var builder = WebApplication.CreateBuilder(args);
-builder.AddHoneybadger(new HoneybadgerOptions("apiKey"));
+builder.AddHoneybadger(new HoneybadgerOptions("{{PROJECT_API_KEY}}"));
 ```
 
 Or you can configure Honeybadger through your `appsettings.json` file, by adding a `Honeybadger` section:
@@ -40,7 +40,7 @@ Or you can configure Honeybadger through your `appsettings.json` file, by adding
 ```json
 {
    "Honeybadger": {
-      "ApiKey": "apiKey",
+      "ApiKey": "{{PROJECT_API_KEY}}",
       "AppEnvironment": "Development",
       "ReportData": true
    }
@@ -91,7 +91,7 @@ dotnet add package Honeybadger.Extensions.Logging
 ```c#
 var builder = WebApplication.CreateBuilder(args);
 // or set the configuration in the appsettings.json file
-builder.AddHoneybadger(new HoneybadgerOptions("apiKey"));
+builder.AddHoneybadger(new HoneybadgerOptions("{{PROJECT_API_KEY}}"));
 builder.Logging.AddHoneybadger();
 ```
 
@@ -121,7 +121,7 @@ Note: If you want to disable automatic reporting of unhandled exceptions, you ca
 ```json
 {
    "Honeybadger": {
-      "ApiKey": "apiKey",
+      "ApiKey": "{{PROJECT_API_KEY}}",
       "AppEnvironment": "Development",
       "ReportData": true,
       "ReportUnhandledExceptions": false
@@ -157,7 +157,7 @@ dotnet add package Honeybadger
 ```c#
 using Microsoft.Extensions.Options;
 
-var options = new HoneybadgerOptions("apiKey");
+var options = new HoneybadgerOptions("{{PROJECT_API_KEY}}");
 var client = new HoneybadgerClient(Options.Create(options));
 ```
 

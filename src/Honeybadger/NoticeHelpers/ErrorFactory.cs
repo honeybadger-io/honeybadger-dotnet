@@ -7,7 +7,7 @@ public static class ErrorFactory
 {
     public static Error Get(StackTrace stackTrace, string message, string? className = null)
     {
-        var @class = className ?? stackTrace.GetFrame(0)?.GetMethod()?.DeclaringType?.FullName ?? "CLASS"; 
+        var @class = className ?? stackTrace.GetFrame(0)?.GetMethod()?.DeclaringType?.FullName ?? "CLASS";
         return new Error(@class, message, GetBacktraces(stackTrace))
         {
             Fingerprint = null, // todo
@@ -33,10 +33,22 @@ public static class ErrorFactory
                 File = sf.GetFileName(),
                 Number = sf.GetFileLineNumber().ToString(),
                 Method = sf.GetMethod()?.Name,
-                Context = null, // todo
+                Context = DetermineContext(sf.GetFileName(), HoneybadgerClient.Current?.Options?.ProjectRoot),
             });
         }
 
         return result.ToArray();
+    }
+
+    private static string DetermineContext(string? fileName, string? projectRoot)
+    {
+        if (!string.IsNullOrEmpty(projectRoot) &&
+            !string.IsNullOrEmpty(fileName) &&
+            fileName.StartsWith(projectRoot))
+        {
+            return "app";
+        }
+
+        return "all";
     }
 }

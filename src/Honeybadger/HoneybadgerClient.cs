@@ -252,7 +252,9 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
             const int maxLevels = 5;
             for (var i = 0; i < maxLevels; i++)
             {
-                if (Directory.GetFiles(projectRootDir, "*.sln", SearchOption.TopDirectoryOnly).Length != 0)
+                // .sln and .slnx are the solution file extensions
+                if (Directory.GetFiles(projectRootDir, "*.sln", SearchOption.TopDirectoryOnly).Length != 0 ||
+                    Directory.GetFiles(projectRootDir, "*.slnx", SearchOption.TopDirectoryOnly).Length != 0)
                 {
                     break;
                 }

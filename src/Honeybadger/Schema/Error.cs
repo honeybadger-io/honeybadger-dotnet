@@ -59,4 +59,12 @@ public class ErrorBacktrace
     */
 }
 
-public enum Context { All, App };
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum Context
+{
+    [JsonStringEnumMemberName("all")]
+    All,
+    
+    [JsonStringEnumMemberName("app")]
+    App
+};

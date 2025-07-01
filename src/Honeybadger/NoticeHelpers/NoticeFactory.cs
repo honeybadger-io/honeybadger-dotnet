@@ -8,28 +8,33 @@ public static class NoticeFactory
 {
     /// <summary>
     /// Make a Notice from a plain message.
-    /// Note: StackTrace skips 2 frames: NoticeFactory.Make + HoneybadgerClient.Notify.
+    /// Note: Some stack frames are skipped to avoid internal Honeybadger being included stack trace.
+    /// Alternatively, you can pass a framesToSkip parameter to skip a specific number of frames.
     /// </summary>
-    /// <param name="client"></param>
-    /// <param name="message"></param>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    public static Notice Make(IHoneybadgerClient client, string message, Dictionary<string, object>? context = null)
+    public static Notice Make(IHoneybadgerClient client, string message, Dictionary<string, object>? context = null, int? framesToSkip = null)
     {
-        var stackTrace = new StackTrace(1, true);
-        // do while loop to skip internal frames
-        var frameIndex = 0;
-        var isFrameInternal = true;
-        while (isFrameInternal)
+        StackTrace stackTrace;
+        if (framesToSkip is not null)
         {
-            isFrameInternal = stackTrace.GetFrame(frameIndex)?
-                .GetMethod()?
-                .DeclaringType?.FullName?
-                .Contains("Honeybadger") ?? false;
-            
-            frameIndex++;
+            stackTrace = new StackTrace(framesToSkip.Value, true);    
         }
-        stackTrace = new StackTrace(frameIndex, true);
+        else
+        {
+            stackTrace = new StackTrace(1, true);
+            // do while loop to skip internal frames
+            var frameIndex = 0;
+            var isFrameInternal = true;
+            while (isFrameInternal)
+            {
+                isFrameInternal = stackTrace.GetFrame(frameIndex)?
+                    .GetMethod()?
+                    .DeclaringType?.FullName?
+                    .Contains("Honeybadger") ?? false;
+            
+                frameIndex++;
+            }
+            stackTrace = new StackTrace(frameIndex, true);
+        }
         
         return Make(client, message, stackTrace, context: context);
     }
@@ -43,8 +48,8 @@ public static class NoticeFactory
     /// <returns></returns>
     public static Notice Make(IHoneybadgerClient client, Exception error, Dictionary<string, object>? context = null)
     {
-        // todo: Should we skip 2 frames here?
-        var stackTrace = error.StackTrace == null ? new StackTrace(true) : new StackTrace(error, true);
+        // When creating a StackTrace from an Exception, we skip the first frame, which is the frame of the NoticeFactory.Make method.
+        var stackTrace = error.StackTrace == null ? new StackTrace(1, true) : new StackTrace(error, 0,true);
 
         return Make(client, error.Message, stackTrace, error.GetType().FullName, context);
     }
@@ -54,7 +59,7 @@ public static class NoticeFactory
     {
         return new Notice(
             BreadcrumbsFactory.Get(client),
-            ErrorFactory.Get(stackTrace, message, className),
+            ErrorFactory.Get(stackTrace, message, className, client.Options.ProjectRoot),
             NotifierFactory.Get(),
             RequestFactory.Get(context),
             ServerFactory.Get(client)

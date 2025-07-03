@@ -14,10 +14,6 @@ The Honeybadger Notifier can be configured using the `HoneybadgerOptions` class.
 Honeybadger can be configured by passing the options when registering the service,
 or through your `appsettings.json` file.
 
-Honeybadger, by default, will not report errors in development environments.
-You can override the development environments by setting the `DevelopmentEnvironments` property in the options.
-Alternatively, you can set the `ReportData` property to `true` to report errors in all environments.
-
 See below for examples on how to configure Honeybadger for different types of applications.
 
 ### For .Net Core Web App
@@ -32,7 +28,10 @@ dotnet add package Honeybadger.DotNetCore
 
 ```c#
 var builder = WebApplication.CreateBuilder(args);
-builder.AddHoneybadger(new HoneybadgerOptions("{{PROJECT_API_KEY}}"));
+builder.AddHoneybadger(configure =>
+{
+    configure.ApiKey = "{{PROJECT_API_KEY}}";
+});
 ```
 
 Or you can configure Honeybadger through your `appsettings.json` file, by adding a `Honeybadger` section:
@@ -46,6 +45,8 @@ Or you can configure Honeybadger through your `appsettings.json` file, by adding
    }
 }
 ```
+**Note**: You should probably set your API key through environment variables or use the Secrets Manager, instead of hardcoding it in the `appsettings.json` file.
+You can read the [official documentation](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets) for more information on how to do that in a .Net Core app.
 
 And simply call `AddHoneybadger` without any parameters:
 
@@ -59,15 +60,15 @@ builder.AddHoneybadger();
 You can access the _Honeybadger Client_ using _DI_:
 
 ```c#
-app.MapGet("/", ([FromServices] IHoneybadgerClient client) =>
+app.MapGet("/", ([FromServices] IHoneybadgerClient honeybadger) =>
 {
-    client.AddBreadcrumb("reached index route", "route", new Dictionary<string, object?>());
+    honeybadger.AddBreadcrumb("reached index route", "route", new Dictionary<string, object?>());
 
     return "Hello World!";
 });
 ```
 
-Any unhandled exceptions should be reported to Honeybadger automatically (unless `ReportUnhandledExceptions` is set to false):
+Any unhandled exceptions should be reported to Honeybadger automatically (unless `ReportUnhandledExceptions` is set to `false`):
 
 ```c#
 app.MapGet("/debug", () =>
@@ -91,7 +92,10 @@ dotnet add package Honeybadger.Extensions.Logging
 ```c#
 var builder = WebApplication.CreateBuilder(args);
 // or set the configuration in the appsettings.json file
-builder.AddHoneybadger(new HoneybadgerOptions("{{PROJECT_API_KEY}}"));
+builder.AddHoneybadger(configure =>
+{
+    configure.ApiKey = "{{PROJECT_API_KEY}}";
+});
 builder.Logging.AddHoneybadger();
 ```
 
@@ -116,7 +120,45 @@ builder.AddHoneybadger();
 builder.Logging.AddHoneybadger();
 ```
 
-Note: If you want to disable automatic reporting of unhandled exceptions, you can set the `ReportUnhandledExceptions` property to `false` in the `HoneybadgerOptions`:
+#### Usage
+
+Errors from the `logger` will be reported to Honeybadger:
+
+```c#
+app.MapGet("/notify", ([FromServices] ILogger<Program> logger) =>
+{
+      logger.LogError("hello from Honeybadger.Logger!");
+
+      return "Log reported to Honeybadger. Check your dashboard!";
+});
+```
+
+See example project in `examples/Honeybadger.DotNetCoreWebApp.Logger`.
+
+### Send a test notification
+
+**Note**: Honeybadger, by default, will not report errors in development environments.
+You can override the development environments by setting the `DevelopmentEnvironments` property in the options.
+Alternatively, you can set the `ReportData` property to `true` to report errors in all environments.
+
+You can send a test notification to Honeybadger to verify that the configuration is working.
+Add the following to your `Program.cs` file:
+```c#
+// ...
+builder.AddHoneybadger();
+// ...
+var app = builder.Build();
+var honeybadger = app.Services.GetRequiredService<IHoneybadgerClient>();
+await honeybadger.NotifyAsync("Hello from .Net!");
+```
+
+Run the app.
+If the configuration is correctly set, you should see the notification in your Honeybadger dashboard.
+
+### Automatic Error Reporting
+
+Automatic error reporting is enabled by default, but you can disable it by setting
+the `ReportUnhandledExceptions` property to `false` in `HoneybadgerOptions`:
 
 ```json
 {
@@ -128,21 +170,6 @@ Note: If you want to disable automatic reporting of unhandled exceptions, you ca
    }
 }
 ```
-
-#### Usage
-
-Errors from the `logger` will be reported to Honeybadger:
-
-```c#
-app.MapGet("/notify", ([FromServices] ILogger logger) =>
-{
-      logger.LogError("hello from Honeybadger.Logger!");
-
-      return "Log reported to Honeybadger. Check your dashboard!";
-});
-```
-
-See example project in `examples/Honeybadger.DotNetCoreWebApp.Logger`.
 
 ### Using the SDK manually
 
@@ -158,16 +185,16 @@ dotnet add package Honeybadger
 using Microsoft.Extensions.Options;
 
 var options = new HoneybadgerOptions("{{PROJECT_API_KEY}}");
-var client = new HoneybadgerClient(Options.Create(options));
+var honeybadger = new HoneybadgerClient(Options.Create(options));
 ```
 
 #### 3. Call `notify` to report to Honeybadger:
 
 ```c#
-// blocking
-client.Notify("hello from .Net !");
+// fire and forget
+honeybadger.Notify("hello from .Net !");
 // or async
-await client.NotifyAsync("hello from .Net !");
+await honeybadger.NotifyAsync("hello from .Net !");
 ```
 
 See example project in `examples/Honeybadger.Console`.

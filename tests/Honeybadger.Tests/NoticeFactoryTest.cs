@@ -13,12 +13,16 @@ public class NoticeFactoryTest
     public void CreatesNotice_FromString()
     {
         var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions()));
-        var notice = NoticeFactory.Make(client, "test");
+        // We are passing framesToSkip because we don't want to skip "Honeybadger" frames
+        // (the test project is called Honeybadger.Tests).
+        // We set framesToSkip to 1 to skip the NoticeFactory.Make method.
+        var notice = NoticeFactory.Make(client, "test", framesToSkip: 1);
 
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);
         Assert.Equal("test", notice.Error.Message);
-        Assert.Equal("System.RuntimeMethodHandle", notice.Error.Class);
+        Assert.Equal("Honeybadger.Tests.NoticeFactoryTest", notice.Error.Class);
+        Assert.Equal("CreatesNotice_FromString", notice.Error.Backtrace[0].Method);
         AssertNotifier(notice);
     }
 
@@ -33,6 +37,7 @@ public class NoticeFactoryTest
         Assert.NotNull(notice.Error);
         Assert.Equal("exception", notice.Error.Message);
         Assert.Equal("Honeybadger.Tests.NamedException", notice.Error.Class);
+        Assert.Equal("CreatesNotice_FromException", notice.Error.Backtrace[0].Method);
         AssertNotifier(notice);
     }
 
@@ -52,6 +57,7 @@ public class NoticeFactoryTest
         Assert.NotNull(notice.Error);
         Assert.Equal("exception", notice.Error.Message);
         Assert.Equal("Honeybadger.Tests.NamedException", notice.Error.Class);
+        Assert.Equal("CreatesNotice_WithBreadcrumbs", notice.Error.Backtrace[0].Method);
         Assert.True(notice.Breadcrumbs.Enabled);
         if (!notice.Breadcrumbs.Trail.Any())
         {
@@ -82,6 +88,7 @@ public class NoticeFactoryTest
         Assert.NotNull(notice.Error);
         Assert.Equal("exception", notice.Error.Message);
         Assert.Equal("Honeybadger.Tests.NamedException", notice.Error.Class);
+        Assert.Equal("CreatesNotice_WithMaxBreadcrumbs", notice.Error.Backtrace[0].Method);
         Assert.True(notice.Breadcrumbs.Enabled);
         if (!notice.Breadcrumbs.Trail.Any())
         {
@@ -109,7 +116,27 @@ public class NoticeFactoryTest
         Assert.NotNull(notice.Error);
         Assert.Equal("exception", notice.Error.Message);
         Assert.Equal("Honeybadger.Tests.NamedException", notice.Error.Class);
+        Assert.Equal("CreatesNotice_WithContext", notice.Error.Backtrace[0].Method);
         Assert.Equal(noticeContext, notice.Request.Context);
+        AssertNotifier(notice);
+    }
+
+    [Fact]
+    public void CreatesNotice_WithContextInStackFrame()
+    {
+        var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions()));
+        // We are passing framesToSkip because we don't want to skip "Honeybadger" frames
+        // (the test project is called Honeybadger.Tests).
+        // We set framesToSkip to 1 to skip the NoticeFactory.Make method.
+        var notice = NoticeFactory.Make(client, "test", framesToSkip: 1);
+
+        Assert.NotNull(notice);
+        Assert.NotNull(notice.Error);
+        Assert.Equal("test", notice.Error.Message);
+        Assert.Equal("Honeybadger.Tests.NoticeFactoryTest", notice.Error.Class);
+        Assert.Equal("CreatesNotice_WithContextInStackFrame", notice.Error.Backtrace[0].Method);
+        Assert.Equal(Context.App, notice.Error.Backtrace[0].Context);
+        Assert.Equal(Context.All, notice.Error.Backtrace[1].Context);
         AssertNotifier(notice);
     }
 

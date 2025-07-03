@@ -132,6 +132,7 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
     public void Configure(HoneybadgerOptions options)
     {
         Options = options;
+        SetProjectRoot();
         GetClient(true);
     }
     
@@ -193,8 +194,9 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
                 // Console.WriteLine("Report sent to Honeybadger");
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
+            // no op
             // await Console.Error.WriteLineAsync(ex.Message);
         }
     }
@@ -219,5 +221,51 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
         }
         
         return _httpClient;
+    }
+    
+    /// <summary>
+    /// Attempts to set the project root directory based on the base directory from AppDomain.
+    /// Note: This is a best-effort approach and may not work in all scenarios.
+    ///       We also check if the directory exists, which could throw an exception if
+    ///       the process does not have access to the directory. In that case, we do not set ProjectRoot.
+    /// </summary>
+    private void SetProjectRoot()
+    {
+        if (Options.ProjectRoot is not null)
+        {
+            return;
+        }
+
+        try
+        {
+            // Get the project root directory, excluding the bin directory
+            // Note: If the project is part of a solution, it's better to use the solution root
+            var projectRootDir = Path.GetFullPath("../../../", AppDomain.CurrentDomain.BaseDirectory);
+            if (!Directory.Exists(projectRootDir))
+            {
+                return;
+            }
+        
+            // Now let's see if we can find the solution file
+            // by going up the directory tree, one level at a time
+            // We go a maximum of 5 levels up
+            const int maxLevels = 5;
+            for (var i = 0; i < maxLevels; i++)
+            {
+                // .sln and .slnx are the solution file extensions
+                if (Directory.GetFiles(projectRootDir, "*.sln", SearchOption.TopDirectoryOnly).Length != 0 ||
+                    Directory.GetFiles(projectRootDir, "*.slnx", SearchOption.TopDirectoryOnly).Length != 0)
+                {
+                    break;
+                }
+                projectRootDir = Directory.GetParent(projectRootDir)?.FullName ?? projectRootDir;
+            }
+        
+            Options.ProjectRoot = projectRootDir;
+        }
+        catch (Exception)
+        {
+            // no op
+        }
     }
 }

@@ -5,17 +5,17 @@ namespace Honeybadger.NoticeHelpers;
 
 public static class ErrorFactory
 {
-    public static Error Get(StackTrace stackTrace, string message, string? className = null)
+    public static Error Get(StackTrace stackTrace, string message, string? className = null, string? projectRoot = null)
     {
         var @class = className ?? stackTrace.GetFrame(0)?.GetMethod()?.DeclaringType?.FullName ?? "CLASS"; 
-        return new Error(@class, message, GetBacktraces(stackTrace))
+        return new Error(@class, message, GetBacktraces(stackTrace, projectRoot))
         {
             Fingerprint = null, // todo
             Tags = null, // todo
         };
     }
 
-    private static ErrorBacktrace[] GetBacktraces(StackTrace stackTrace)
+    private static ErrorBacktrace[] GetBacktraces(StackTrace stackTrace, string? projectRoot = null)
     {
         var result = new List<ErrorBacktrace>();
         for (var i = 0; i < stackTrace.FrameCount; i++)
@@ -33,7 +33,9 @@ public static class ErrorFactory
                 File = sf.GetFileName(),
                 Number = sf.GetFileLineNumber().ToString(),
                 Method = sf.GetMethod()?.Name,
-                Context = null, // todo
+                Context = projectRoot != null && (sf.GetFileName()?.StartsWith(projectRoot) ?? false) 
+                    ? Context.App 
+                    : Context.All,
             });
         }
 

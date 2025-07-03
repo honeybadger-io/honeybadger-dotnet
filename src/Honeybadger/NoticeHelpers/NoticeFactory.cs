@@ -48,8 +48,11 @@ public static class NoticeFactory
     /// <returns></returns>
     public static Notice Make(IHoneybadgerClient client, Exception error, Dictionary<string, object>? context = null)
     {
-        // When creating a StackTrace from an Exception, we skip the first frame, which is the frame of the NoticeFactory.Make method.
-        var stackTrace = error.StackTrace == null ? new StackTrace(1, true) : new StackTrace(error, 0,true);
+        // When creating a StackTrace from an exception which does not have a StackTrace, we skip the first frame,
+        // which is the frame of the NoticeFactory.Make method.
+        var stackTrace = error.StackTrace == null 
+            ? new StackTrace(1, true) 
+            : new StackTrace(error, 0, true);
 
         return Make(client, error.Message, stackTrace, error.GetType().FullName, context);
     }

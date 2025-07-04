@@ -15,5 +15,5 @@ configuration
     .Bind(options);
 
 var client = new HoneybadgerClient(Options.Create(options));
-client.Notify("Hello from .Net! Improved error handling with Honeybadger.");
+await client.NotifyAsync("Hello from .Net! Improved error handling with Honeybadger.");
 Console.WriteLine("Done. Check your Honeybadger dashboard for the error.");

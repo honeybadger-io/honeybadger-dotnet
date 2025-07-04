@@ -14,6 +14,11 @@ The Honeybadger Notifier can be configured using the `HoneybadgerOptions` class.
 Honeybadger can be configured by passing the options when registering the service,
 or through your `appsettings.json` file.
 
+Honeybadger will attempt to automatically figure out the `ProjectRoot` directory, 
+which should be the root of your project or solution. A valid `ProjectRoot` directory will allow Honeybadger to
+classify stack frames as either _application_ code or _all_ other code (e.g. framework code) 
+and hence provide better error reports.
+
 See below for examples on how to configure Honeybadger for different types of applications.
 
 ### For .Net Core Web App
@@ -245,20 +250,6 @@ To release manually, execute the following steps:
 8. Run `dotnet nuget push ./src/Honeybadger.DotNetCore/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key YOUR_API_KEY`
 9. Commit the changes in the `Honeybadger.Extensions.Logging` and `Honeybadger.DotNetCore` projects.
 10. Push the changes to the repository - at this point you will have pushed the git tags + the new versions of the packages to nuget.org.
-
-## TODO
-
-- [ ] Publish README with basic info to setup core nuget
-- [ ] Publish Honeybadger.DotNetCore with README
-- [ ] Publish Honeybadger.Extensions.Logging with README
-- [ ] Implement Error Grouping (custom fingerprint)
-- [ ] Implement Error Tags
-- [ ] Allow excluding errors (either with a BeforeNotify method or exception classes config)
-- [ ] Implement Filter Keys (exclude sensitive keys)
-- [ ] Implement Checkins
-- [ ] Implement Collect User Feedback
-- [ ] Create guide for Deployment Tracking
-- [ ] Create integration guide in honeybadger-docs project
 
 ## License
 

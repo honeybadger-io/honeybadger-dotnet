@@ -50,8 +50,10 @@ Or you can configure Honeybadger through your `appsettings.json` file, by adding
    }
 }
 ```
-**Note**: You should probably set your API key through environment variables or use the Secrets Manager, instead of hardcoding it in the `appsettings.json` file.
-You can read the [official documentation](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets) for more information on how to do that in a .Net Core app.
+
+> [!NOTE]
+> You should probably set your API key through environment variables or use the Secrets Manager, instead of hardcoding it in the `appsettings.json` file.
+> You can read the [official documentation](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets) for more information on how to do that in a .Net Core app.
 
 And simply call `AddHoneybadger` without any parameters:
 
@@ -142,9 +144,10 @@ See example project in `examples/Honeybadger.DotNetCoreWebApp.Logger`.
 
 ### Send a test notification
 
-**Note**: Honeybadger, by default, will not report errors in development environments.
-You can override the development environments by setting the `DevelopmentEnvironments` property in the options.
-Alternatively, you can set the `ReportData` property to `true` to report errors in all environments.
+> [!NOTE]
+> Honeybadger, by default, will not report errors in development environments.
+> You can override the development environments by setting the `DevelopmentEnvironments` property in the options.
+> Alternatively, you can set the `ReportData` property to `true` to report errors in all environments.
 
 You can send a test notification to Honeybadger to verify that the configuration is working.
 Add the following to your `Program.cs` file:
@@ -221,7 +224,8 @@ Conventional Commits are enforced with a pre-commit git hook (using [husky](http
 
 ## Releasing
 
-**Note**: Automated releases are not yet fully functional. See [Manual Releases](#manual-releases) for the current process.
+> [!WARNING]
+> Automated releases are not yet fully functional. See [Manual Releases](#manual-releases) for the current process.
 
 All packages are published on nuget.org with a [Github Actions Worfklow](./.github/workflows/release.yml).
 The workflow does the following:

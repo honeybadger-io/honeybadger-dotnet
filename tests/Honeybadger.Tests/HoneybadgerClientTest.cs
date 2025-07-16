@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Honeybadger.NoticeHelpers;
 using Honeybadger.Schema;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -23,7 +24,7 @@ public class HoneybadgerClientTest
             ReportData = false
         });
         
-        var client = new HoneybadgerClient(options);
+        var client = new HoneybadgerClient(options, new BaseNoticeFactory());
         Assert.NotNull(client);
     }
     
@@ -66,7 +67,7 @@ public class HoneybadgerClientTest
             ApiKey = "test",
             HttpClient = new HttpClient(mockHttpHandler.Object)
         });
-        var client = new HoneybadgerClient(options);
+        var client = new HoneybadgerClient(options, new BaseNoticeFactory());
         client.AddBreadcrumb(breadcrumbMessage, breadcrumbCategory, breadcrumbMetadata);
         client.Notify(noticeMessage);
     }
@@ -101,7 +102,7 @@ public class HoneybadgerClientTest
             ApiKey = "test",
             HttpClient = new HttpClient(mockHttpHandler.Object)
         });
-        var client = new HoneybadgerClient(options);
+        var client = new HoneybadgerClient(options, new BaseNoticeFactory());
         client.AddContext(noticeContext);
         client.Notify(noticeMessage);
     }

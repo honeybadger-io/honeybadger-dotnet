@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Honeybadger.NoticeHelpers;
 using Honeybadger.Schema;
 using Microsoft.Extensions.Options;
 using Xunit;
@@ -12,11 +11,12 @@ public class NoticeFactoryTest
     [Fact]
     public void CreatesNotice_FromString()
     {
-        var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions()));
+        var noticeFactory = new BaseNoticeFactory();
+        var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions()), noticeFactory);
         // We are passing framesToSkip because we don't want to skip "Honeybadger" frames
         // (the test project is called Honeybadger.Tests).
         // We set framesToSkip to 1 to skip the NoticeFactory.Make method.
-        var notice = NoticeFactory.Make(client, "test", framesToSkip: 1);
+        var notice = noticeFactory.Make(client, "test", framesToSkip: 1);
 
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);
@@ -29,9 +29,10 @@ public class NoticeFactoryTest
     [Fact]
     public void CreatesNotice_FromException()
     {
-        var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions()));
+        var noticeFactory = new BaseNoticeFactory();
+        var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions()), noticeFactory);
         var exception = new NamedException("exception");
-        var notice = NoticeFactory.Make(client, exception);
+        var notice = noticeFactory.Make(client, exception);
 
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);
@@ -44,14 +45,15 @@ public class NoticeFactoryTest
     [Fact]
     public void CreatesNotice_WithBreadcrumbs()
     {
+        var noticeFactory = new BaseNoticeFactory();
         var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions
         {
             ApiKey = "test",
             ReportData = true
-        }));
+        }), noticeFactory);
         client.AddBreadcrumb("a breadcrumb", "a category");
         var exception = new NamedException("exception");
-        var notice = NoticeFactory.Make(client, exception);
+        var notice = noticeFactory.Make(client, exception);
         
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);
@@ -59,7 +61,7 @@ public class NoticeFactoryTest
         Assert.Equal("Honeybadger.Tests.NamedException", notice.Error.Class);
         Assert.Equal("CreatesNotice_WithBreadcrumbs", notice.Error.Backtrace[0].Method);
         Assert.True(notice.Breadcrumbs.Enabled);
-        if (!notice.Breadcrumbs.Trail.Any())
+        if (notice.Breadcrumbs.Trail.Length == 0)
         {
             // Console.WriteLine("CreatesNotice_WithBreadcrumbs: no breadcrumbs");
         }
@@ -75,14 +77,15 @@ public class NoticeFactoryTest
             ApiKey = "test",
             ReportData = true
         };
-        var client = new HoneybadgerClient(Options.Create(options));
+        var noticeFactory = new BaseNoticeFactory();
+        var client = new HoneybadgerClient(Options.Create(options), noticeFactory);
         for (var i = 0; i < options.MaxBreadcrumbs + 2; i++)
         {
             client.AddBreadcrumb($"a breadcrumb {i}", "a category");
         }
     
         var exception = new NamedException("exception");
-        var notice = NoticeFactory.Make(client, exception);
+        var notice = noticeFactory.Make(client, exception);
         
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);
@@ -104,13 +107,14 @@ public class NoticeFactoryTest
     [Fact]
     public void CreatesNotice_WithContext()
     {
-        var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions { ReportData = true }));
+        var noticeFactory = new BaseNoticeFactory();
+        var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions { ReportData = true }), noticeFactory);
         var noticeContext = new Dictionary<string, object>
         {
             {"user_id", 123}
         };
         var exception = new NamedException("exception");
-        var notice = NoticeFactory.Make(client, exception, noticeContext);
+        var notice = noticeFactory.Make(client, exception, noticeContext);
 
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);
@@ -124,11 +128,12 @@ public class NoticeFactoryTest
     [Fact]
     public void CreatesNotice_WithContextInStackFrame()
     {
-        var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions()));
+        var noticeFactory = new BaseNoticeFactory();
+        var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions()), noticeFactory);
         // We are passing framesToSkip because we don't want to skip "Honeybadger" frames
         // (the test project is called Honeybadger.Tests).
         // We set framesToSkip to 1 to skip the NoticeFactory.Make method.
-        var notice = NoticeFactory.Make(client, "test", framesToSkip: 1);
+        var notice = noticeFactory.Make(client, "test", framesToSkip: 1);
 
         Assert.NotNull(notice);
         Assert.NotNull(notice.Error);

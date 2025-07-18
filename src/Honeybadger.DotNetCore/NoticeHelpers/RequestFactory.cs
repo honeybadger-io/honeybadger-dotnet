@@ -3,6 +3,7 @@ using Honeybadger.Schema;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions; 
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
 
 namespace Honeybadger.DotNetCore.NoticeHelpers;
@@ -71,17 +72,15 @@ public static class RequestFactory
         try
         {
             var uri = new Uri(url);
-            var queryParams = System.Web.HttpUtility.ParseQueryString(uri.Query);
-            var filteredParams = new List<string>();
-
-            foreach (var key in queryParams.AllKeys)
-            {
-                if (key == null) continue;
-                
-                var paramValue = queryParams[key] ?? "";
-                var value = FilterValue(key, paramValue, filterKeys);
-                filteredParams.Add($"{key}={Uri.EscapeDataString(value)}");
-            }
+            var queryParams = QueryHelpers.ParseNullableQuery(uri.Query);
+            var filteredParams = queryParams?
+                .Select(kvp =>
+                {
+                    var key = kvp.Key;
+                    var value = FilterValue(key, kvp.Value, filterKeys);
+                    return $"{kvp.Key}={Uri.EscapeDataString(value)}";
+                })
+                .ToList() ?? new List<string>();
 
             var filteredQuery = filteredParams.Count > 0 ? "?" + string.Join("&", filteredParams) : "";
             return $"{uri.Scheme}://{uri.Authority}{uri.AbsolutePath}{filteredQuery}";
@@ -174,6 +173,7 @@ public static class RequestFactory
     
     private static Dictionary<string, object>? GetParams(HttpContext? httpContext, string[]? filterKeys = null)
     {
+        // https://github.com/getsentry/sentry-dotnet/blob/6785f8e79d31b072a157a56ce1445ceb0244b628/src/Sentry/Extensibility/IRequestPayloadExtractor.cs#L6
         return null;
     }
 

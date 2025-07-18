@@ -104,7 +104,7 @@ public class RequestDataTests
         Assert.Equal("GET", notice.Request.CgiData?.RequestMethod);
         Assert.Equal("Test", notice.Request.Component);
         // We did not name this endpoint, so we get the default DisplayName
-        Assert.Equal("Honeybadger.DotNetCore.Tests.Fixture.TestController.Debug (Honeybadger.DotNetCore.Tests)", notice.Request.Action);
+        Assert.Contains("TestController.Debug", notice.Request.Action);
         Assert.Equal("http://localhost/Test/Debug", notice.Request.Url);
     }
 

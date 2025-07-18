@@ -11,7 +11,7 @@ public class NoticeFactoryTest
     [Fact]
     public void CreatesNotice_FromString()
     {
-        var noticeFactory = new BaseNoticeFactory();
+        var noticeFactory = new NoticeFactory();
         var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions()), noticeFactory);
         // We are passing framesToSkip because we don't want to skip "Honeybadger" frames
         // (the test project is called Honeybadger.Tests).
@@ -29,7 +29,7 @@ public class NoticeFactoryTest
     [Fact]
     public void CreatesNotice_FromException()
     {
-        var noticeFactory = new BaseNoticeFactory();
+        var noticeFactory = new NoticeFactory();
         var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions()), noticeFactory);
         var exception = new NamedException("exception");
         var notice = noticeFactory.Make(client, exception);
@@ -45,7 +45,7 @@ public class NoticeFactoryTest
     [Fact]
     public void CreatesNotice_WithBreadcrumbs()
     {
-        var noticeFactory = new BaseNoticeFactory();
+        var noticeFactory = new NoticeFactory();
         var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions
         {
             ApiKey = "test",
@@ -77,7 +77,7 @@ public class NoticeFactoryTest
             ApiKey = "test",
             ReportData = true
         };
-        var noticeFactory = new BaseNoticeFactory();
+        var noticeFactory = new NoticeFactory();
         var client = new HoneybadgerClient(Options.Create(options), noticeFactory);
         for (var i = 0; i < options.MaxBreadcrumbs + 2; i++)
         {
@@ -107,7 +107,7 @@ public class NoticeFactoryTest
     [Fact]
     public void CreatesNotice_WithContext()
     {
-        var noticeFactory = new BaseNoticeFactory();
+        var noticeFactory = new NoticeFactory();
         var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions { ReportData = true }), noticeFactory);
         var noticeContext = new Dictionary<string, object>
         {
@@ -128,7 +128,7 @@ public class NoticeFactoryTest
     [Fact]
     public void CreatesNotice_WithContextInStackFrame()
     {
-        var noticeFactory = new BaseNoticeFactory();
+        var noticeFactory = new NoticeFactory();
         var client = new HoneybadgerClient(Options.Create(new HoneybadgerOptions()), noticeFactory);
         // We are passing framesToSkip because we don't want to skip "Honeybadger" frames
         // (the test project is called Honeybadger.Tests).

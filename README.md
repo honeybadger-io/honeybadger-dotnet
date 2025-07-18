@@ -193,7 +193,7 @@ dotnet add package Honeybadger
 using Microsoft.Extensions.Options;
 
 var options = new HoneybadgerOptions("{{PROJECT_API_KEY}}");
-var honeybadger = new HoneybadgerClient(Options.Create(options), new BaseNoticeFactory());
+var honeybadger = new HoneybadgerClient(Options.Create(options));
 ```
 
 #### 3. Call `notify` to report to Honeybadger:

@@ -12,7 +12,7 @@ public class WebAppNoticeFactory : NoticeFactory
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public override void EnrichNotice(IHoneybadgerClient client, Notice notice)
+    protected override void EnrichNotice(IHoneybadgerClient client, Notice notice)
     {
         var context = client.GetContext();
         var requestData = NoticeHelpers.RequestFactory.Get(_httpContextAccessor.HttpContext, context, client.Options);

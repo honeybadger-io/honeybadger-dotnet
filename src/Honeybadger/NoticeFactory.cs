@@ -4,10 +4,13 @@ using Honeybadger.Schema;
 
 namespace Honeybadger;
 
-public abstract class NoticeFactory
+public class NoticeFactory
 {
-    public abstract void EnrichNotice(IHoneybadgerClient client, Notice notice);
-    
+    protected virtual void EnrichNotice(IHoneybadgerClient client, Notice notice)
+    {
+        // no-op
+    }
+
     /// <summary>
     /// Make a Notice from a plain message.
     /// Note: Some stack frames are skipped to avoid internal Honeybadger being included stack trace.

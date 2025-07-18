@@ -24,7 +24,7 @@ public class HoneybadgerClientTest
             ReportData = false
         });
         
-        var client = new HoneybadgerClient(options, new BaseNoticeFactory());
+        var client = new HoneybadgerClient(options);
         Assert.NotNull(client);
     }
     
@@ -67,7 +67,7 @@ public class HoneybadgerClientTest
             ApiKey = "test",
             HttpClient = new HttpClient(mockHttpHandler.Object)
         });
-        var client = new HoneybadgerClient(options, new BaseNoticeFactory());
+        var client = new HoneybadgerClient(options);
         client.AddBreadcrumb(breadcrumbMessage, breadcrumbCategory, breadcrumbMetadata);
         client.Notify(noticeMessage);
     }
@@ -102,7 +102,7 @@ public class HoneybadgerClientTest
             ApiKey = "test",
             HttpClient = new HttpClient(mockHttpHandler.Object)
         });
-        var client = new HoneybadgerClient(options, new BaseNoticeFactory());
+        var client = new HoneybadgerClient(options);
         client.AddContext(noticeContext);
         client.Notify(noticeMessage);
     }

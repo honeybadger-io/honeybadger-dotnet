@@ -20,10 +20,10 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
 
     public HoneybadgerClient(
         IOptions<HoneybadgerOptions> options,
-        NoticeFactory noticeFactory
+        NoticeFactory? noticeFactory = null
     )
     {
-        _noticeFactory = noticeFactory;
+        _noticeFactory = noticeFactory ?? new NoticeFactory();
         _context = new ThreadLocal<Dictionary<string, object>>(() => new Dictionary<string, object>());
         _breadcrumbs = new ThreadLocal<List<Trail>>(() => new List<Trail>());
         Configure(options.Value);

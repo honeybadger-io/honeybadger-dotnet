@@ -8,19 +8,13 @@ public static class RequestFactory
     {
         return new Request
         {
-            CgiData = GetCgiData(),
             Context = context,
+            CgiData = null,
             Action = null,
             Component = null,
             Params = null,
             Session = null,
             Url = null
         };
-    }
-    
-    // todo: return type should not be nullable
-    private static CgiData? GetCgiData()
-    {
-        return null;
     }
 }

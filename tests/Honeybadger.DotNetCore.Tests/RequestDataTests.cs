@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -9,7 +8,6 @@ using Honeybadger.Schema;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -88,7 +86,7 @@ public class RequestDataTests
         // Act
         try
         {
-            var resp = await client.GetAsync("/Test/Debug");
+            await client.GetAsync("/Test/Debug");
         }
         catch (Exception ex)
         {
@@ -265,7 +263,7 @@ public class RequestDataTests
         Assert.Contains("localhost", notice.Request.CgiData.HttpHost);
     }
 
-    [Fact(Skip = "Not implemented yet")]
+    [Fact]
     public async Task PostRequestWithBody_CapturesRequestBody()
     {
         // Arrange
@@ -308,7 +306,7 @@ public class RequestDataTests
         Assert.Equal("123", notice.Request.Params["userId"].ToString());
     }
     
-    [Fact(Skip = "Not implemented yet")]
+    [Fact]
     public async Task PostRequestWithBody_CapturesRequestBodyWithFilteredKeys()
     {
         // Arrange
@@ -351,7 +349,44 @@ public class RequestDataTests
         Assert.Equal("[FILTERED]", notice.Request.Params["password"].ToString());
     }
     
-    [Fact(Skip = "Not implemented yet")]
+    [Fact]
+    public async Task PostRequestWithBody_DoesNotCaptureBodyWhenDisabled()
+    {
+        // Arrange
+        var mockHbClient = new HttpClientMock();
+        var server = await StartTestServer(mockHbClient, false);
+        var client = server.GetTestClient();
+        var requestBody = new
+        {
+            message = "test request body data",
+            userId = 123,
+        };
+        
+        // Act
+        try
+        {
+            var rawRequestBody = JsonSerializer.Serialize(requestBody);
+            var content = new StringContent(
+                rawRequestBody, 
+                System.Text.Encoding.UTF8,
+                "application/json");
+            await client.PostAsync("/debug", content);
+        }
+        catch (Exception ex)
+        {
+            // test server propagates exceptions to the unit test
+            Assert.Equal("Hello from .Net Core Web App!", ex.Message);
+        }
+        
+        // Assert
+        var notice = mockHbClient.GetRequestBodyAs<Notice>();
+        Assert.NotNull(notice?.Request);
+        Assert.Equal("POST", notice.Request.CgiData?.RequestMethod);
+        Assert.Equal("http://localhost/debug", notice.Request.Url);
+        Assert.Null(notice.Request.Params);
+    }
+    
+    [Fact]
     public async Task PostRequestWithMultiPartForm_CapturesRequestBody()
     {
         // Arrange
@@ -396,7 +431,7 @@ public class RequestDataTests
     /// Microsoft's documentation on how to test middleware:
     /// https://learn.microsoft.com/en-us/aspnet/core/test/middleware?view=aspnetcore-9.0
     /// </summary>
-    private static async Task<IHost> StartTestServer(HttpClientMock mockHbClient)
+    private static async Task<IHost> StartTestServer(HttpClientMock mockHbClient, bool captureRequestBody = true)
     {
         return await new HostBuilder()
             .ConfigureWebHost(webBuilder =>
@@ -412,6 +447,7 @@ public class RequestDataTests
                             options.ApiKey = "test-api-key";
                             options.ReportData = true;
                             options.HttpClient = mockHbClient.Client;
+                            options.CaptureRequestBody = captureRequestBody;
                         });
                         services.AddHoneybadger();
                         services.AddControllers();

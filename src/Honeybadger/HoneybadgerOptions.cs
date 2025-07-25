@@ -68,7 +68,15 @@ public class HoneybadgerOptions
     /// .Net Core web applications by registering a middleware
     /// to catch unhandled exceptions.
     /// </summary>
-    public bool ReportUnhandledExceptions { get; set; } = true; 
+    public bool ReportUnhandledExceptions { get; set; } = true;
+
+    /// <summary>
+    /// In .Net Core Web Applications, the content of a request
+    /// is by default read-once and read-forward only for performance reasons.
+    /// By setting this flag to true, Honeybadger will call
+    /// HttpContext.Request.EnableBuffering() which will allow reading the content more than once.   
+    /// </summary>
+    public bool CaptureRequestBody { get; set; } = false;
     
     public bool ShouldReport()
     {

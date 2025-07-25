@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using Honeybadger.Schema;
 using Microsoft.AspNetCore.Http;
@@ -23,9 +24,11 @@ public static class RequestFactory
             CgiData = GetCgiData(httpContext),
             Action = GetAction(httpContext, hbContext),
             Component = GetComponent(httpContext),
-            Params = GetParams(httpContext, options?.FilterKeys),
             Session = GetSession(httpContext, options?.FilterKeys),
             Url = FilterUrl(httpContext?.Request.GetEncodedUrl(), options?.FilterKeys),
+            Params = (options?.CaptureRequestBody ?? false) 
+                ? GetParams(httpContext, options?.FilterKeys) 
+                : null,
         };
     }
     
@@ -171,20 +174,14 @@ public static class RequestFactory
         return null;
     }
     
-    private static Dictionary<string, object>? GetParams(HttpContext? httpContext, string[]? filterKeys = null)
-    {
-        // https://github.com/getsentry/sentry-dotnet/blob/6785f8e79d31b072a157a56ce1445ceb0244b628/src/Sentry/Extensibility/IRequestPayloadExtractor.cs#L6
-        return null;
-    }
-
     /// <summary>
-    /// todo: I have yet to find a reliable way to read request's body.
-    /// HttpContext.Request.Body is a read-forward only stream.
-    /// There are ways to enable reading more than once but are not elegant:
-    /// - Call HttpContext.Request.EnableBuffering() before reading the request for the first time.
-    /// - Read and move stream pointer to 0.
+    /// This method assumes that HttpContext.Request.EnableBuffering()
+    /// has already been called.
+    /// It then reads the content of the body synchronously,
+    /// but this should be OK, since the content most probably has already been read
+    /// when binding to a request model.
     /// </summary>
-    private static async Task<Dictionary<string, object>?> GetParamsAsync(HttpContext? httpContext, string[]? filterKeys = null)
+    private static Dictionary<string, object>? GetParams(HttpContext? httpContext, string[]? filterKeys = null)
     {
         if (httpContext == null)
         {
@@ -197,23 +194,32 @@ public static class RequestFactory
         // Get form data if present
         if (httpContext.Request.HasFormContentType)
         {
-            var form =  await httpContext.Request.ReadFormAsync();
+            var form =  httpContext.Request.Form
+                .ToDictionary(k => k.Key, v => v.Value);
             foreach (var formParam in form)
             {
                 parameters[formParam.Key] = FilterValue(formParam.Key, formParam.Value, filterKeys);
             }
         }
         
-        
         // Get body data if present
-        if (httpContext.Request.HasJsonContentType())
+        if (httpContext.Request.HasJsonContentType() 
+            && httpContext.Request.Body is { CanRead: true, CanSeek: true })
         {
+            var originalPosition = httpContext.Request.Body.Position;
             try
             {
-                // Assuming body content is JSON, you can deserialize it to a dictionary
-                var bodyParams = await httpContext.Request.ReadFromJsonAsync<Dictionary<string, object>>();
-                if (bodyParams is not null)
+                httpContext.Request.Body.Position = 0;
+                using var reader = new StreamReader(httpContext.Request.Body,
+                    Encoding.UTF8,
+                    detectEncodingFromByteOrderMarks: true,
+                    leaveOpen: true);
+
+                // can't call .ReadToEnd() because sync calls to body will throw 
+                var body = reader.ReadToEndAsync().GetAwaiter().GetResult();
+                if (body.Length > 0)
                 {
+                    var bodyParams = JsonSerializer.Deserialize<Dictionary<string, object>>(body);
                     var filteredBody = FilterDictionary(bodyParams, filterKeys);
                     if (filteredBody != null)
                     {
@@ -223,10 +229,15 @@ public static class RequestFactory
                         }
                     }
                 }
+
             }
             catch (JsonException)
             {
                 parameters["body"] = "[BODY PARSING FAILED]";
+            }
+            finally
+            {
+                httpContext.Request.Body.Position = originalPosition;
             }
         }
 

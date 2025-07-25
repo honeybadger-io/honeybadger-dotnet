@@ -26,6 +26,11 @@ public class HoneybadgerMiddleware
 
         try
         {
+            if (client.Options.CaptureRequestBody)
+            {
+                context.Request.EnableBuffering();
+            }
+            
             await _next(context);
         }
         catch (Exception exception)

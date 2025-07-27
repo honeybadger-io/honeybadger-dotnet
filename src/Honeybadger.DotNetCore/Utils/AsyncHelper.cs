@@ -1,5 +1,10 @@
 namespace Honeybadger.DotNetCore.Utils;
 
+/// <summary>
+/// Provides utilities for safely calling async methods from synchronous contexts.
+/// These helpers prevent deadlocks and ensure proper exception propagation by using
+/// a dedicated TaskScheduler.Default to avoid capturing the synchronization context.
+/// </summary>
 public static class AsyncHelper
 {
     private static readonly TaskFactory TaskFactory = new

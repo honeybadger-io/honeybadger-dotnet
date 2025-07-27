@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using Honeybadger.DotNetCore.Utils;
 using Honeybadger.Schema;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions; 
@@ -79,9 +80,8 @@ public static class RequestFactory
             var filteredParams = queryParams?
                 .Select(kvp =>
                 {
-                    var key = kvp.Key;
-                    var value = FilterValue(key, kvp.Value, filterKeys);
-                    return $"{kvp.Key}={Uri.EscapeDataString(value)}";
+                    var value = FilterValue(kvp.Key, kvp.Value, filterKeys);
+                    return $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(value)}";
                 })
                 .ToList() ?? new List<string>();
 
@@ -206,17 +206,24 @@ public static class RequestFactory
         if (httpContext.Request.HasJsonContentType() 
             && httpContext.Request.Body is { CanRead: true, CanSeek: true })
         {
+            StreamReader reader;
             var originalPosition = httpContext.Request.Body.Position;
             try
             {
                 httpContext.Request.Body.Position = 0;
-                using var reader = new StreamReader(httpContext.Request.Body,
+                reader = new StreamReader(httpContext.Request.Body,
                     Encoding.UTF8,
                     detectEncodingFromByteOrderMarks: true,
                     leaveOpen: true);
 
                 // can't call .ReadToEnd() because sync calls to body will throw 
-                var body = reader.ReadToEndAsync().GetAwaiter().GetResult();
+                var body = AsyncHelper.RunSync(() =>
+                {
+                    var result = reader.ReadToEndAsync();
+                    reader.Dispose();
+                    
+                    return result;
+                });
                 if (body.Length > 0)
                 {
                     var bodyParams = JsonSerializer.Deserialize<Dictionary<string, object>>(body);

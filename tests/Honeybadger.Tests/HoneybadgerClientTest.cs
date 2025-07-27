@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Honeybadger.NoticeHelpers;
 using Honeybadger.Schema;
 using Microsoft.Extensions.Options;
 using Moq;

@@ -50,7 +50,7 @@ public class HoneybadgerStartupFilter : IStartupFilter
                 client.Options.ReportUnhandledExceptions)
             {
                 // no need to await, we're in a fire-and-forget context
-                client.NotifyAsync(exception).ConfigureAwait(false);
+                client.Notify(exception);
             }
         }
     }

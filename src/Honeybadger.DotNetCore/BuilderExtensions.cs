@@ -34,7 +34,9 @@ public static class ServiceCollectionExtensions
     {
         services
             .AddHttpClient()
+            .AddHttpContextAccessor()
             .AddSingleton<IStartupFilter, HoneybadgerStartupFilter>()
+            .AddScoped<NoticeFactory, WebAppNoticeFactory>()
             .AddScoped<IHoneybadgerClient, HoneybadgerClient>();
 
         return services;

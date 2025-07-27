@@ -1,7 +1,6 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Honeybadger.NoticeHelpers;
 using Honeybadger.Schema;
 using Microsoft.Extensions.Options;
 
@@ -16,9 +15,15 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
     private readonly ThreadLocal<Dictionary<string, object>> _context;
 
     private readonly ThreadLocal<List<Trail>> _breadcrumbs;
+    
+    private readonly NoticeFactory _noticeFactory;
 
-    public HoneybadgerClient(IOptions<HoneybadgerOptions> options)
+    public HoneybadgerClient(
+        IOptions<HoneybadgerOptions> options,
+        NoticeFactory? noticeFactory = null
+    )
     {
+        _noticeFactory = noticeFactory ?? new NoticeFactory();
         _context = new ThreadLocal<Dictionary<string, object>>(() => new Dictionary<string, object>());
         _breadcrumbs = new ThreadLocal<List<Trail>>(() => new List<Trail>());
         Configure(options.Value);
@@ -31,7 +36,7 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
 
     public void Notify(string message, Dictionary<string, object> context)
     {
-        var notice = NoticeFactory.Make(this, message, GetContext(context));
+        var notice = _noticeFactory.Make(this, message, GetContext(context));
         Notify(notice);
     }
 
@@ -42,11 +47,11 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
 
     public void Notify(Exception error, Dictionary<string, object> context)
     {
-        var notice = NoticeFactory.Make(this, error, GetContext(context));
+        var notice = _noticeFactory.Make(this, error, GetContext(context));
         Notify(notice);
     }
 
-    private void Notify(Notice notice)
+    public void Notify(Notice notice)
     {
         _ = Task.Run(async () => await NotifyAsync(notice)).ConfigureAwait(false);
     }
@@ -56,10 +61,10 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
         return NotifyAsync(message, new Dictionary<string, object>());
     }
 
-    public Task NotifyAsync(string message, Dictionary<string, object> context)
+    public async Task NotifyAsync(string message, Dictionary<string, object> context)
     {
-        var notice = NoticeFactory.Make(this, message, GetContext(context));
-        return NotifyAsync(notice);
+        var notice = _noticeFactory.Make(this, message, GetContext(context));
+        await NotifyAsync(notice);
     }
 
     public Task NotifyAsync(Exception error)
@@ -67,15 +72,15 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
         return NotifyAsync(error, new Dictionary<string, object>());
     }
 
-    public Task NotifyAsync(Exception error, Dictionary<string, object> context)
+    public async Task NotifyAsync(Exception error, Dictionary<string, object> context)
     {
-        var notice = NoticeFactory.Make(this, error, GetContext(context));
-        return NotifyAsync(notice);
+        var notice = _noticeFactory.Make(this, error, GetContext(context));
+        await NotifyAsync(notice);
     }
-
-    private Task NotifyAsync(Notice notice)
+    
+    public async Task NotifyAsync(Notice notice)
     {
-        return Send(notice);
+        await Send(notice);
     }
 
     public void AddContext(Dictionary<string, object> context)
@@ -142,7 +147,7 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
         _breadcrumbs.Dispose();
     }
 
-    private Dictionary<string, object> GetContext(Dictionary<string, object>? context = null)
+    public Dictionary<string, object> GetContext(Dictionary<string, object>? context = null)
     {
         if (context == null)
         {

@@ -13,7 +13,9 @@ public class HoneybadgerStartupFilter : IStartupFilter
     {
         return builder =>
         {
-            // builder.ApplicationServices.GetService<DiagnosticListener>()?.SubscribeWithAdapter(new DiagnosticSubscriber());
+            // catch exceptions when ASPNETCORE_ENVIRONMENT is Development
+            builder.ApplicationServices.GetService<DiagnosticListener>()?.SubscribeWithAdapter(new DiagnosticSubscriber());
+            
             builder.UseMiddleware<HoneybadgerMiddleware>();
             next(builder);
         };

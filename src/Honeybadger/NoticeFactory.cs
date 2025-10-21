@@ -68,7 +68,7 @@ public class NoticeFactory
     {
         var notice = new Notice(
             BreadcrumbsFactory.Get(client),
-            ErrorFactory.Get(stackTrace, message, className, client.Options.ProjectRoot),
+            ErrorFactory.Get(stackTrace, message, className, hbContext, client.Options.ProjectRoot),
             NotifierFactory.Get(),
             RequestFactory.Get(hbContext),
             ServerFactory.Get(client)

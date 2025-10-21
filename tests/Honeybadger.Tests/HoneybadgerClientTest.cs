@@ -1,10 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Honeybadger.NoticeHelpers;
 using Honeybadger.Schema;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -105,6 +105,68 @@ public class HoneybadgerClientTest
         var client = new HoneybadgerClient(options);
         client.AddContext(noticeContext);
         client.Notify(noticeMessage);
+    }
+
+    [Fact]
+    public void SendsNotice_WithTags()
+    {
+        const string noticeMessage = "notice with tags";
+        string[] tags = ["v1.0.0"];
+        var mockHttpHandler = new Mock<HttpMessageHandler>();
+        mockHttpHandler.Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .Callback((HttpRequestMessage request, CancellationToken token) =>
+            {
+                var content = request.Content?.ReadAsStringAsync(token).Result;
+                var notice = JsonSerializer.Deserialize<Notice>(content!)!;
+                Assert.NotNull(notice);
+                Assert.Equal(noticeMessage, notice.Error.Message);
+                Assert.NotNull(notice.Request);
+                Assert.Equal(tags, notice.Error.Tags);
+            })
+            .ReturnsAsync(new HttpResponseMessage {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("")
+            });
+        
+        var options = Options.Create(new HoneybadgerOptions
+        {
+            ApiKey = "test",
+            HttpClient = new HttpClient(mockHttpHandler.Object)
+        });
+        var client = new HoneybadgerClient(options);
+        client.Notify(noticeMessage, new Dictionary<string, object> { {"tags", tags } });
+    }
+    
+    [Fact]
+    public void SendsNotice_WithFingerprint()
+    {
+        const string noticeMessage = "notice with tags";
+        var fingerprint = Guid.NewGuid().ToString();
+        var mockHttpHandler = new Mock<HttpMessageHandler>();
+        mockHttpHandler.Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .Callback((HttpRequestMessage request, CancellationToken token) =>
+            {
+                var content = request.Content?.ReadAsStringAsync(token).Result;
+                var notice = JsonSerializer.Deserialize<Notice>(content!)!;
+                Assert.NotNull(notice);
+                Assert.Equal(noticeMessage, notice.Error.Message);
+                Assert.NotNull(notice.Request);
+                Assert.Equal(fingerprint, notice.Error.Fingerprint);
+            })
+            .ReturnsAsync(new HttpResponseMessage {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("")
+            });
+        
+        var options = Options.Create(new HoneybadgerOptions
+        {
+            ApiKey = "test",
+            HttpClient = new HttpClient(mockHttpHandler.Object)
+        });
+        var client = new HoneybadgerClient(options);
+        client.Notify(noticeMessage, new Dictionary<string, object> { {"fingerprint", fingerprint } });
     }
 
 }

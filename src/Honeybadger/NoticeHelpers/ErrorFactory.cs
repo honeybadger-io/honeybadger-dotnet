@@ -5,13 +5,38 @@ namespace Honeybadger.NoticeHelpers;
 
 public static class ErrorFactory
 {
-    public static Error Get(StackTrace stackTrace, string message, string? className = null, string? projectRoot = null)
+    public static Error Get(
+        StackTrace stackTrace, 
+        string message, 
+        string? className = null, 
+        Dictionary<string, object>? hbContext = null,
+        string? projectRoot = null)
     {
-        var @class = className ?? stackTrace.GetFrame(0)?.GetMethod()?.DeclaringType?.FullName ?? "CLASS"; 
+        var @class = className ?? stackTrace.GetFrame(0)?.GetMethod()?.DeclaringType?.FullName ?? "CLASS";
+        
+        object? tagsObj = null;
+        hbContext?.Remove(Constants.ContextTagsKey, out tagsObj);
+
+        var tags = tagsObj switch
+        {
+            string[] tagsArray => tagsArray,
+            string tagString => new[] { tagString },
+            _ => null
+        };
+
+        object? fingerprintObj = null;
+        hbContext?.Remove(Constants.ContextFingerprintKey, out fingerprintObj);
+
+        string? fingerprint = null;
+        if (fingerprintObj is string fingerprintString)
+        {
+            fingerprint = fingerprintString;
+        }
+        
         return new Error(@class, message, GetBacktraces(stackTrace, projectRoot))
         {
-            Fingerprint = null, // todo
-            Tags = null, // todo
+            Fingerprint = fingerprint,
+            Tags = tags
         };
     }
 

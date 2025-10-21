@@ -1,5 +1,17 @@
 
 
+<a name="0.6.0"></a>
+## [0.6.0](https://www.github.com/honeybadger-io/honeybadger-dotnet/releases/tag/v0.6.0) (2025-10-21)
+
+### Features
+
+* add context in stack traces ([e0b67d7](https://www.github.com/honeybadger-io/honeybadger-dotnet/commit/e0b67d75a16137390a8f40fa2418577775ad6cc7))
+* add context in stack traces ([63a2663](https://www.github.com/honeybadger-io/honeybadger-dotnet/commit/63a2663956dfaf5625119d70225656c77edb4e73))
+* add support for capturing HTTP request body ([673ab3d](https://www.github.com/honeybadger-io/honeybadger-dotnet/commit/673ab3dad03f42db946faab1f0574c4313c47060))
+* add support for tags and fingerprint ([cb4d85f](https://www.github.com/honeybadger-io/honeybadger-dotnet/commit/cb4d85fa5af1e9ae4e52ed892e8546d71be47071))
+* capture request data ([d79e38a](https://www.github.com/honeybadger-io/honeybadger-dotnet/commit/d79e38a2897a91411b249f61a27ba0fb4ac4b41a))
+* capture request data ([#24](https://www.github.com/honeybadger-io/honeybadger-dotnet/issues/24)) ([7ff6ecf](https://www.github.com/honeybadger-io/honeybadger-dotnet/commit/7ff6ecfc3080f1cbff4c904d7db3484df3a479e1))
+
 <a name="0.5.0"></a>
 ## [0.5.0](https://www.github.com/honeybadger-io/honeybadger-dotnet/releases/tag/v0.5.0) (2025-02-26)
 

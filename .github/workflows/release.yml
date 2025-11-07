@@ -9,10 +9,16 @@ jobs:
     name: Bump Version and Publish Nuget
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/create-github-app-token@v2
+        id: generate-token
         with:
-          token: ${{ secrets.GH_RELEASE_PAT }}
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
           fetch-depth: 0
           
       - name: Git Config
@@ -30,16 +36,10 @@ jobs:
         run: dotnet versionize
                 
       - name: Pack Nugets
-        run: dotnet pack --configuration Release
+        run: dotnet pack --configuration Release -o ./artifacts
         
-      - name: Publish Honeybadger Nuget
-        run: dotnet nuget push src/Honeybadger/bin/Release/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{ secrets.NUGET_API_KEY }}
-
-      - name: Publish Honeybadger.DotNetCore
-        run: dotnet nuget push src/Honeybadger.DotNetCore/bin/Release/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{ secrets.NUGET_API_KEY }}
-        
-      - name: Publish Honeybadger.Extensions.Logging
-        run: dotnet nuget push src/Honeybadger.Extensions.Logging/bin/Release/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{ secrets.NUGET_API_KEY }}
+      - name: Publish Nugets
+        run: dotnet nuget push ./artifacts/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{ secrets.NUGET_API_KEY }}
           
       - name: Push tags on git
         run: git push --follow-tags origin

@@ -224,7 +224,7 @@ Conventional Commits are enforced with a pre-commit git hook (using [husky](http
 
 ## Releasing
 
-All packages are published on nuget.org with a [Github Actions Worfklow](./.github/workflows/release.yml).
+All packages are published on nuget.org with a [Github Actions Workflow](./.github/workflows/release.yml).
 The workflow does the following:
 
 - `dotnet versionize` - bump versions and generate changelog

@@ -6,11 +6,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Description>Honeybadger client for .Net</Description>
-        <RepositoryUrl>https://github.com/honeybadger-io/honeybadger-dotnet</RepositoryUrl>
+        <RepositoryUrl>https://github.com/honeybadger-io/honeybadger-dotnet.git</RepositoryUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseUrl>https://github.com/honeybadger-io/honeybadger-dotnet/MIT_LICENSE</PackageLicenseUrl>
         <PackageTags>honeybadger, exception, error, monitoring</PackageTags>
         <Version>0.6.0</Version>
+        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
     <ItemGroup>

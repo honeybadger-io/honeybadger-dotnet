@@ -6,15 +6,15 @@ using Microsoft.Extensions.Options;
 
 namespace Honeybadger;
 
-public class HoneybadgerClient : IHoneybadgerClient, IDisposable
+public class HoneybadgerClient : IHoneybadgerClient
 {
     public HoneybadgerOptions Options { get; private set; } = null!;
     
     private HttpClient? _httpClient;
 
-    private readonly ThreadLocal<Dictionary<string, object>> _context;
+    private readonly AsyncLocal<Dictionary<string, object>> _context = new();
 
-    private readonly ThreadLocal<List<Trail>> _breadcrumbs;
+    private readonly AsyncLocal<List<Trail>> _breadcrumbs = new();
     
     private readonly NoticeFactory _noticeFactory;
 
@@ -24,8 +24,6 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
     )
     {
         _noticeFactory = noticeFactory ?? new NoticeFactory();
-        _context = new ThreadLocal<Dictionary<string, object>>(() => new Dictionary<string, object>());
-        _breadcrumbs = new ThreadLocal<List<Trail>>(() => new List<Trail>());
         Configure(options.Value);
     }
 
@@ -85,11 +83,8 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
 
     public void AddContext(Dictionary<string, object> context)
     {
-        if (_context.Value == null)
-        {
-            return;
-        }
-        
+        _context.Value ??= new Dictionary<string, object>();
+
         foreach (var entry in context)
         {
             _context.Value[entry.Key] = entry.Value;
@@ -103,12 +98,12 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
 
     public void AddBreadcrumb(string message, string? category = null, Dictionary<string, object?>? options = null)
     {
-        if (_breadcrumbs.Value == null || !Options.ShouldReport() || !Options.BreadcrumbsEnabled)
+        if (!Options.ShouldReport() || !Options.BreadcrumbsEnabled)
         {
-            // fixme: for debugging purposes (see #3 - CI is randomly failing) 
-            // Console.WriteLine($"not adding breadcrumb: {message}");
             return;
         }
+
+        _breadcrumbs.Value ??= new List<Trail>();
 
         var trail = new Trail(message);
         if (category != null)
@@ -120,7 +115,7 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
         {
             trail.Metadata = options;
         }
-        
+
         _breadcrumbs.Value.Add(trail);
 
         if (_breadcrumbs.Value.Count > Options.MaxBreadcrumbs)
@@ -140,12 +135,6 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
         SetProjectRoot();
         GetClient(true);
     }
-    
-    public void Dispose()
-    {
-        _context.Dispose();
-        _breadcrumbs.Dispose();
-    }
 
     public Dictionary<string, object> GetContext(Dictionary<string, object>? context = null)
     {
@@ -154,10 +143,7 @@ public class HoneybadgerClient : IHoneybadgerClient, IDisposable
             return _context.Value ?? new Dictionary<string, object>();
         }
 
-        if (_context.Value == null)
-        {
-            return context;
-        }
+        _context.Value ??= new Dictionary<string, object>();
 
         foreach (var entry in context)
         {

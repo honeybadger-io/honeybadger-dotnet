@@ -170,7 +170,7 @@ public class HoneybadgerClientTest
                 Assert.Equal(noticeMessage, notice.Error.Message);
                 Assert.NotNull(notice.Request);
                 Assert.Equal(fingerprint, notice.Error.Fingerprint);
-                noticeReceived.TrySetResult();
+                noticeReceived.SetResult();
             })
             .ReturnsAsync(new HttpResponseMessage {
                 StatusCode = HttpStatusCode.OK,
@@ -202,7 +202,7 @@ public class HoneybadgerClientTest
             {
                 var content = request.Content?.ReadAsStringAsync(token).Result;
                 var notice = JsonSerializer.Deserialize<Notice>(content!)!;
-                noticeReceived.TrySetResult(notice);
+                noticeReceived.SetResult(notice);
             })
             .ReturnsAsync(new HttpResponseMessage
             {

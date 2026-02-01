@@ -8,7 +8,15 @@ jobs:
     needs: [ test ]
     name: Bump Version and Publish Nuget
     runs-on: ubuntu-latest
+    permissions: 
+      id-token: write
     steps:
+      - name: NuGet login (OIDC → temp API key)
+        uses: NuGet/login@v1
+        id: nuget-login
+        with:
+          user: subzero
+
       - uses: actions/create-github-app-token@v2
         id: generate-token
         with:
@@ -39,7 +47,7 @@ jobs:
         run: dotnet pack --configuration Release -o ./artifacts
         
       - name: Publish Nugets
-        run: dotnet nuget push ./artifacts/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{ secrets.NUGET_API_KEY }}
+        run: dotnet nuget push ./artifacts/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
           
       - name: Push tags on git
         run: git push --follow-tags origin

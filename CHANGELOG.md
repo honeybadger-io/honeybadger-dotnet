@@ -1,5 +1,12 @@
 
 
+<a name="0.7.0"></a>
+## [0.7.0](https://www.github.com/honeybadger-io/honeybadger-dotnet/releases/tag/v0.7.0) (2026-02-01)
+
+### Features
+
+* use AsyncLocal for context and breadcrumbs ([#28](https://www.github.com/honeybadger-io/honeybadger-dotnet/issues/28)) ([887db2d](https://www.github.com/honeybadger-io/honeybadger-dotnet/commit/887db2d8edb66646543b0483240e7760f263d7e0))
+
 <a name="0.6.0"></a>
 ## [0.6.0](https://www.github.com/honeybadger-io/honeybadger-dotnet/releases/tag/v0.6.0) (2025-10-21)
 
